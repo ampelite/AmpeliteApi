@@ -6,6 +6,8 @@ namespace AmpeliteApi.Models
 {
     public partial class db_AmpeliteContext : DbContext
     {
+        public db_AmpeliteContext(DbContextOptions<db_AmpeliteContext> options) : base(options) { }
+        
         public virtual DbSet<AuthDevices> AuthDevices { get; set; }
         public virtual DbSet<AuthPermissions> AuthPermissions { get; set; }
         public virtual DbSet<AuthTransactions> AuthTransactions { get; set; }
@@ -13,19 +15,10 @@ namespace AmpeliteApi.Models
         public virtual DbSet<DailypoGroupUnit> DailypoGroupUnit { get; set; }
         public virtual DbSet<DailypoProductGroup> DailypoProductGroup { get; set; }
         public virtual DbSet<DailypoProductTeam> DailypoProductTeam { get; set; }
+        public virtual DbSet<DailypoGraphProduct> DailypoGraphProduct { get; set; }
         public virtual DbSet<GetTransactionInv> GetTransactionInv { get; set; }
         public virtual DbSet<GetTransactionSo> GetTransactionSo { get; set; }
         public virtual DbSet<HrEmployee> HrEmployee { get; set; }
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //    #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-        //        optionsBuilder.UseSqlServer(@"Server=AMPELITE-001\SQLEXPRESS01;Database=db_Ampelite;Trusted_Connection=True;user id=sa;password=Amp7896321;");
-        //    }
-        //}
-        public db_AmpeliteContext(DbContextOptions<db_AmpeliteContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -731,5 +724,7 @@ namespace AmpeliteApi.Models
                     .HasColumnType("datetime");
             });
         }
+
+      
     }
 }
