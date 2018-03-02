@@ -6,6 +6,8 @@ namespace AmpeliteApi.Models
 {
     public partial class db_AmpeliteContext : DbContext
     {
+        public db_AmpeliteContext(DbContextOptions<db_AmpeliteContext> options) : base(options) { }
+        
         public virtual DbSet<AuthDevices> AuthDevices { get; set; }
         public virtual DbSet<AuthPermissions> AuthPermissions { get; set; }
         public virtual DbSet<AuthTransactions> AuthTransactions { get; set; }
@@ -13,6 +15,7 @@ namespace AmpeliteApi.Models
         public virtual DbSet<DailypoGroupUnit> DailypoGroupUnit { get; set; }
         public virtual DbSet<DailypoProductGroup> DailypoProductGroup { get; set; }
         public virtual DbSet<DailypoProductTeam> DailypoProductTeam { get; set; }
+<<<<<<< HEAD
         public virtual DbSet<HrEmployee> HrEmployee { get; set; }
 
         public virtual DbSet<DailypoGraphProduct> DailypoGraphProduct { get; set; }
@@ -34,6 +37,13 @@ namespace AmpeliteApi.Models
 
         }
 
+=======
+        public virtual DbSet<DailypoGraphProduct> DailypoGraphProduct { get; set; }
+        public virtual DbSet<GetTransactionInv> GetTransactionInv { get; set; }
+        public virtual DbSet<GetTransactionSo> GetTransactionSo { get; set; }
+        public virtual DbSet<HrEmployee> HrEmployee { get; set; }
+
+>>>>>>> 2eea142fdf1253aaf2b0901d691c70b4932ba6fa
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AuthDevices>(entity =>
@@ -455,5 +465,7 @@ namespace AmpeliteApi.Models
 
             });
         }
+
+      
     }
 }
