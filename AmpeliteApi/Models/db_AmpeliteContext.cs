@@ -13,19 +13,26 @@ namespace AmpeliteApi.Models
         public virtual DbSet<DailypoGroupUnit> DailypoGroupUnit { get; set; }
         public virtual DbSet<DailypoProductGroup> DailypoProductGroup { get; set; }
         public virtual DbSet<DailypoProductTeam> DailypoProductTeam { get; set; }
-        public virtual DbSet<GetTransactionInv> GetTransactionInv { get; set; }
-        public virtual DbSet<GetTransactionSo> GetTransactionSo { get; set; }
         public virtual DbSet<HrEmployee> HrEmployee { get; set; }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //    #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-        //        optionsBuilder.UseSqlServer(@"Server=AMPELITE-001\SQLEXPRESS01;Database=db_Ampelite;Trusted_Connection=True;user id=sa;password=Amp7896321;");
-        //    }
-        //}
-        public db_AmpeliteContext(DbContextOptions<db_AmpeliteContext> options) : base(options) { }
+        public virtual DbSet<DailypoGraphProduct> DailypoGraphProduct { get; set; }
+
+        // Unable to generate entity type for table 'dbo.GET_TransactionSO'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo.GET_TransactionInv'. Please see the warning messages.
+
+        //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //        {
+        //            if (!optionsBuilder.IsConfigured)
+        //            {
+        //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+        //                optionsBuilder.UseSqlServer(@"Server=AMPELITE-001\SQLEXPRESS01;Database=db_Ampelite;Trusted_Connection=True;");
+        //            }
+        //        }
+
+        public db_AmpeliteContext(DbContextOptions<db_AmpeliteContext> options) : base(options)
+        {
+
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -229,309 +236,6 @@ namespace AmpeliteApi.Models
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<GetTransactionInv>(entity =>
-            {
-                entity.ToTable("GET_TransactionInv");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.BrchId).HasColumnName("BrchID");
-
-                entity.Property(e => e.CustCode).HasMaxLength(50);
-
-                entity.Property(e => e.CustName).HasMaxLength(255);
-
-                entity.Property(e => e.CustPono)
-                    .HasColumnName("CustPONo")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CustTypeCode).HasMaxLength(10);
-
-                entity.Property(e => e.CustTypeName).HasMaxLength(50);
-
-                entity.Property(e => e.DataFrom).HasMaxLength(5);
-
-                entity.Property(e => e.DocuDate).HasColumnType("datetime");
-
-                entity.Property(e => e.DocuNo).HasMaxLength(50);
-
-                entity.Property(e => e.DocuStatus).HasMaxLength(10);
-
-                entity.Property(e => e.EmpCode).HasMaxLength(50);
-
-                entity.Property(e => e.GoodBrandCode).HasMaxLength(50);
-
-                entity.Property(e => e.GoodBrandId).HasColumnName("GoodBrandID");
-
-                entity.Property(e => e.GoodBrandName).HasMaxLength(50);
-
-                entity.Property(e => e.GoodCateId).HasColumnName("GoodCateID");
-
-                entity.Property(e => e.GoodClassCode).HasMaxLength(50);
-
-                entity.Property(e => e.GoodClassName).HasMaxLength(50);
-
-                entity.Property(e => e.GoodCode).HasMaxLength(100);
-
-                entity.Property(e => e.GoodColorCode).HasMaxLength(10);
-
-                entity.Property(e => e.GoodColorId).HasColumnName("GoodColorID");
-
-                entity.Property(e => e.GoodColorName).HasMaxLength(50);
-
-                entity.Property(e => e.GoodColorNameEng)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodGroupCode).HasMaxLength(50);
-
-                entity.Property(e => e.GoodGroupId).HasColumnName("GoodGroupID");
-
-                entity.Property(e => e.GoodGroupName).HasMaxLength(50);
-
-                entity.Property(e => e.GoodId)
-                    .HasColumnName("GoodID")
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.GoodMarketName)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodName).HasMaxLength(255);
-
-                entity.Property(e => e.GoodPattnCode).HasMaxLength(10);
-
-                entity.Property(e => e.GoodPattnId).HasColumnName("GoodPattnID");
-
-                entity.Property(e => e.GoodPattnName).HasMaxLength(100);
-
-                entity.Property(e => e.GoodPrice1).HasColumnType("money");
-
-                entity.Property(e => e.GoodTypeCode).HasMaxLength(10);
-
-                entity.Property(e => e.GoodTypeId).HasColumnName("GoodTypeID");
-
-                entity.Property(e => e.GoodTypeName).HasMaxLength(50);
-
-                entity.Property(e => e.GoodUnitName).HasMaxLength(50);
-
-                entity.Property(e => e.InvNo).HasMaxLength(50);
-
-                entity.Property(e => e.JobCode).HasMaxLength(50);
-
-                entity.Property(e => e.JobName).HasMaxLength(255);
-
-                entity.Property(e => e.MainGoodUnitId).HasColumnName("MainGoodUnitID");
-
-                entity.Property(e => e.Model).HasMaxLength(255);
-
-                entity.Property(e => e.Product).HasMaxLength(255);
-
-                entity.Property(e => e.ProductCode).HasMaxLength(200);
-
-                entity.Property(e => e.SaleAreaCode).HasMaxLength(10);
-
-                entity.Property(e => e.SaleAreaName).HasMaxLength(100);
-
-                entity.Property(e => e.SaleName).HasMaxLength(255);
-            });
-
-            modelBuilder.Entity<GetTransactionSo>(entity =>
-            {
-                entity.ToTable("GET_TransactionSO");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.BillDiscFormula)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.BrchId).HasColumnName("BrchID");
-
-                entity.Property(e => e.ClearSo)
-                    .HasColumnName("ClearSO")
-                    .HasMaxLength(1)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustCode)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustId).HasColumnName("CustID");
-
-                entity.Property(e => e.CustName)
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustPono)
-                    .HasColumnName("CustPONo")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DataFrom)
-                    .IsRequired()
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DeptCode)
-                    .HasMaxLength(25)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DeptId).HasColumnName("DeptID");
-
-                entity.Property(e => e.DeptName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DocuDate).HasColumnType("datetime");
-
-                entity.Property(e => e.DocuNo)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.EmpCode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.EmpId).HasColumnName("EmpID");
-
-                entity.Property(e => e.EmpName)
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.EmpNameEng)
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodBrandCode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodBrandId).HasColumnName("GoodBrandID");
-
-                entity.Property(e => e.GoodBrandName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodCateId).HasColumnName("GoodCateID");
-
-                entity.Property(e => e.GoodClassCode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodClassId).HasColumnName("GoodClassID");
-
-                entity.Property(e => e.GoodClassName)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodCode)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodColorCode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodColorId).HasColumnName("GoodColorID");
-
-                entity.Property(e => e.GoodColorName)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodColorNameEng)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodId).HasColumnName("GoodID");
-
-                entity.Property(e => e.GoodName)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodTypeCode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodTypeId).HasColumnName("GoodTypeID");
-
-                entity.Property(e => e.GoodTypeName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GoodUnitId2).HasColumnName("GoodUnitID2");
-
-                entity.Property(e => e.GoodUnitName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.InveCode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.InveId).HasColumnName("InveID");
-
-                entity.Property(e => e.InveName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.InveNameEng)
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.JobCode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.JobId).HasColumnName("JobID");
-
-                entity.Property(e => e.JobName)
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.JobNameEng)
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.OnHold)
-                    .HasMaxLength(1)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Product)
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ProductCode)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SaleAreaCode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SaleAreaId).HasColumnName("SaleAreaID");
-
-                entity.Property(e => e.SaleAreaName)
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShipDate).HasColumnType("datetime");
-
-                entity.Property(e => e.ShipToAddr1).IsUnicode(false);
-
-                entity.Property(e => e.Soid).HasColumnName("SOID");
-
-                entity.Property(e => e.TranspId).HasColumnName("TranspID");
-
-                entity.Property(e => e.TranspName)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Vatamnt).HasColumnName("VATAmnt");
-            });
-
             modelBuilder.Entity<HrEmployee>(entity =>
             {
                 entity.HasKey(e => e.SEmpId);
@@ -729,6 +433,26 @@ namespace AmpeliteApi.Models
                 entity.Property(e => e.UpdateAt)
                     .HasColumnName("update_at")
                     .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<DailypoGraphProduct>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                //entity.ToTable("sp_DAILYPO_GraphProduct");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.EDate);
+
+                entity.Property(e => e._Day);
+
+                entity.Property(e => e.TeamCode);
+
+                entity.Property(e => e.TeamName);
+
+                entity.Property(e => e.Unit);
+
             });
         }
     }

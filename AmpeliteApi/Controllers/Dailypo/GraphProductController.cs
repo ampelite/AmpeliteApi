@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AmpeliteApi.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace AmpeliteApi.Controllers.Dailypo
 {
@@ -22,30 +23,13 @@ namespace AmpeliteApi.Controllers.Dailypo
 
         // GET: api/GraphProduct
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<DailypoGraphProduct> GetAsync()
+
         {
-            //var s = _context.Database.SqlQuery<DailypoGraphProduct>("AllSalesPeople");
-            using (var command = _context.Database.GetDbConnection().CreateCommand())
-            {
- //               @EDate AS DATETIME,
-	//@GroupCode as VARCHAR(25),
-	//@Unit
-                command.CommandText = "dbo.sp_DAILYPO_GraphProduct @EDate ='2018-02-27', @GroupCode ='fibre', @Unit ='1m'";
-                _context.Database.OpenConnection();
-                using (var result = command.ExecuteReader())
-                {
-                   while(result.HasRows)
-                    {
-                        
-                    }
-                }
-                _context.Database.CloseConnection();
-            }
-            //var product = _context
-            //    .DailypoGraphProduct
-            //    .FromSql("EXECUTE dbo.sp_DAILYPO_GraphProduct  @productCategory", productCategory)
-            //    .ToList();
-            return new string[] { "value1", "value2" };
+            var result = _context.DailypoGraphProduct.FromSql("sp_DAILYPO_GraphProduct").ToList();
+
+            return result;
+
         }
 
         // GET: api/GraphProduct/5
