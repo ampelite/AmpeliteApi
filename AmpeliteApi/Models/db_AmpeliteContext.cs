@@ -15,10 +15,6 @@ namespace AmpeliteApi.Models
         public virtual DbSet<DailypoGroupUnit> DailypoGroupUnit { get; set; }
         public virtual DbSet<DailypoProductGroup> DailypoProductGroup { get; set; }
         public virtual DbSet<DailypoProductTeam> DailypoProductTeam { get; set; }
-<<<<<<< HEAD
-=======
-        public virtual DbSet<DailypoGraphProduct> DailypoGraphProduct { get; set; }
->>>>>>> J
         public virtual DbSet<HrEmployee> HrEmployee { get; set; }
 
         public virtual DbSet<DailypoGraphProduct> DailypoGraphProduct { get; set; }
