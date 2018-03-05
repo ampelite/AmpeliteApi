@@ -4,10 +4,11 @@ namespace AmpeliteApi.Models
 {
     public class DailypoGraphProduct
     {
+        public Int64 ID { get; set; }
         public DateTime EDate { get; set; }
-        public int _Day { get; set; }
-        public string GroupCode { get; set; }
-        public string TeamName { get; set; }
-        public double Unit { get; set; }
+        public Int32 _Day { get; set; }
+        public String TeamCode { get; set; }
+        public String TeamName { get; set; }
+        public Decimal Unit { get; set; }
     }
 }

@@ -16,8 +16,6 @@ namespace AmpeliteApi.Models
         public virtual DbSet<DailypoProductGroup> DailypoProductGroup { get; set; }
         public virtual DbSet<DailypoProductTeam> DailypoProductTeam { get; set; }
         public virtual DbSet<DailypoGraphProduct> DailypoGraphProduct { get; set; }
-        public virtual DbSet<GetTransactionInv> GetTransactionInv { get; set; }
-        public virtual DbSet<GetTransactionSo> GetTransactionSo { get; set; }
         public virtual DbSet<HrEmployee> HrEmployee { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
