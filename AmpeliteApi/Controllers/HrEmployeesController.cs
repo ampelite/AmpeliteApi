@@ -77,7 +77,6 @@ namespace AmpeliteApi.Controllers
                     throw;
                 }
             }
-
             return NoContent();
         }
 

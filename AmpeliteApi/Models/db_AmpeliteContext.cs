@@ -15,7 +15,6 @@ namespace AmpeliteApi.Models
         public virtual DbSet<DailypoGroupUnit> DailypoGroupUnit { get; set; }
         public virtual DbSet<DailypoProductGroup> DailypoProductGroup { get; set; }
         public virtual DbSet<DailypoProductTeam> DailypoProductTeam { get; set; }
-<<<<<<< HEAD
         public virtual DbSet<HrEmployee> HrEmployee { get; set; }
 
         public virtual DbSet<DailypoGraphProduct> DailypoGraphProduct { get; set; }
@@ -32,18 +31,6 @@ namespace AmpeliteApi.Models
         //            }
         //        }
 
-        public db_AmpeliteContext(DbContextOptions<db_AmpeliteContext> options) : base(options)
-        {
-
-        }
-
-=======
-        public virtual DbSet<DailypoGraphProduct> DailypoGraphProduct { get; set; }
-        public virtual DbSet<GetTransactionInv> GetTransactionInv { get; set; }
-        public virtual DbSet<GetTransactionSo> GetTransactionSo { get; set; }
-        public virtual DbSet<HrEmployee> HrEmployee { get; set; }
-
->>>>>>> 2eea142fdf1253aaf2b0901d691c70b4932ba6fa
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AuthDevices>(entity =>
@@ -445,25 +432,25 @@ namespace AmpeliteApi.Models
                     .HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<DailypoGraphProduct>(entity =>
-            {
-                entity.HasKey(e => e.ID);
+            //modelBuilder.Entity<DailypoGraphProduct>(entity =>
+            //{
+            //    entity.HasKey(e => e.ID);
 
-                //entity.ToTable("sp_DAILYPO_GraphProduct");
+            //    //entity.ToTable("sp_DAILYPO_GraphProduct");
 
-                entity.Property(e => e.ID).HasColumnName("ID");
+            //    entity.Property(e => e.ID).HasColumnName("ID");
 
-                entity.Property(e => e.EDate);
+            //    entity.Property(e => e.EDate);
 
-                entity.Property(e => e._Day);
+            //    entity.Property(e => e._Day);
 
-                entity.Property(e => e.TeamCode);
+            //    entity.Property(e => e.TeamCode);
 
-                entity.Property(e => e.TeamName);
+            //    entity.Property(e => e.TeamName);
 
-                entity.Property(e => e.Unit);
+            //    entity.Property(e => e.Unit);
 
-            });
+            //});
         }
 
       
