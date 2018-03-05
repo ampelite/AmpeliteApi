@@ -26,7 +26,8 @@ namespace AmpeliteApi.Controllers.Dailypo
         [HttpGet]
         public IEnumerable<DailypoGraphProduct> Get()
         {
-            return _context.DailypoGraphProduct.FromSql("dbo.sp_DAILYPO_GraphProduct");
+            var result = _context.DailypoGraphProduct.FromSql("sp_DAILYPO_GraphProduct").ToList();
+            return result;
         }
 
         // GET: api/GraphProduct/5
