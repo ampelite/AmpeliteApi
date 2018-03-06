@@ -26,16 +26,16 @@ namespace AmpeliteApi.Controllers.Dailypo
 
         // GET: api/GraphProduct
         [HttpGet]
-        public IEnumerable<object> Get(DateTime Date, String GroupCode, String Unit)
+        public async Task<IEnumerable<object>> GetAsync(DateTime Date, String GroupCode, String Unit)
         {
             var p1 = Date.Date;
             var p2 = GroupCode;
             var p3 = Unit;
 
-            var Result = _context
+            var Result = await _context
                 .DailypoGraphProduct
                 .FromSql("sp_DAILYPO_GraphProduct @p0, @p1, @p2", parameters: new[] { p1.ToString("yyyy-MM-dd"), p2, p3 })
-                .ToArray();
+                .ToListAsync();
 
             var ListProduct = Result.Where(p => p.Type.Equals("product")).ToList();
             var ListSum = Result.Where(p => p.Type.Equals("sum")).ToList();
@@ -75,12 +75,6 @@ namespace AmpeliteApi.Controllers.Dailypo
             Cate.Name = "avg";
             Cate.Unit = ListAvg.Select(u => Double.Parse(u.Unit.ToString())).ToList();
             ListReturn.Add(Cate);
-
-            //var pivotArray = Result.ToPivotArray(
-            //item => item.Day,
-            //item => item.Type,
-            //items => items.Any() ? items.Sum(x => Double.Parse(x.Unit.ToString())) : 0
-            //);
 
             return ListReturn;
         }
