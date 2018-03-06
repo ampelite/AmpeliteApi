@@ -37,74 +37,59 @@ namespace AmpeliteApi.Controllers.Dailypo
                 .FromSql("sp_DAILYPO_GraphProduct @p0, @p1, @p2", parameters: new[] { p1.ToString("yyyy-MM-dd"), p2, p3 })
                 .ToArray();
 
-            int Day = 1;
+            var ListProduct = Result.Where(p => p.Type.Equals("product")).ToList();
+            var ListSum = Result.Where(p => p.Type.Equals("sum")).ToList();
+            var ListAccu = Result.Where(p => p.Type.Equals("accu")).ToList();
+            var ListAvg = Result.Where(p => p.Type.Equals("avg")).ToList();
 
-            Double Accu = 0.00;
-            Double Avg = 0.00;
+            var ListReturn = new List<object>();
             var Cate = new Categories();
-            var ListCate = new List<dynamic>();
 
-            for (int i = 0; i < Result.Count(); i++)
+            // select และ group TeamName ออกมา
+            var ListTeamName = ListProduct.GroupBy(g => g.TeamName).Select(u => u.Key).ToList();
+
+            foreach(string Name in ListTeamName)
             {
-                if (Result[i].TeamCode.ToLower() == "total")
-                {
-                    int WeekDay = Result[i].WeekDay;
-                    Double Total = Double.Parse(Result[i].Unit.ToString());
-
-                    if (Day <= Date.Day) { Accu += Total; }
-
-                    // กรณีที่ไม่ใช่วันเสาร์ อาทิตย์
-                    if (WeekDay != 1 && WeekDay != 7)
-                    {
-                        // จะคำนวณ Avg ก็ต่อเมื่อวันที่ไม่เกิน param.Date.Day
-                        if (Day <= Date.Day) { Avg = Accu / Day; }
-                        Day++;
-                    }
-
-                    if (Day <= Date.Day)
-                    {
-                        Cate.Accu = Accu;
-                        Cate.Avg = Avg;
-                    }
-
-                    Cate.WeekDay = WeekDay;
-                    Cate.Day = Result[i].Day;
-                    Cate.TotalUnit = Total;
-                    ListCate.Add(Cate);
-                }
+                var ListTeam = ListProduct.Where(u => u.TeamName.Equals(Name)).ToList();
+                Cate = new Categories();
+                Cate.Type = "product";
+                Cate.Name = Name;
+                Cate.Unit = ListTeam.Select(u => Double.Parse(u.Unit.ToString())).ToList();
+                ListReturn.Add(Cate);                
             }
 
-            var all = new List<dynamic>();
-            all.Add(Result);
-            all.Add(Cate);
+            Cate = new Categories();
+            Cate.Type = "sum";
+            Cate.Name = "sum";
+            Cate.Unit = ListSum.Select(u => Double.Parse(u.Unit.ToString())).ToList();
+            ListReturn.Add(Cate);
 
-            var pivotArray = Result.ToPivotArray(
-            item => item.Day,
-            item => item.TeamName,
-            items => items.Any() ? items.Sum(x => x.Unit) : 0
-            );
+            Cate = new Categories();
+            Cate.Type = "accu";
+            Cate.Name = "accu";
+            Cate.Unit = ListAccu.Select(u => Double.Parse(u.Unit.ToString())).ToList();
+            ListReturn.Add(Cate);
 
-            
+            Cate = new Categories();
+            Cate.Type = "avg";
+            Cate.Name = "avg";
+            Cate.Unit = ListAvg.Select(u => Double.Parse(u.Unit.ToString())).ToList();
+            ListReturn.Add(Cate);
 
-            return pivotArray;
+            //var pivotArray = Result.ToPivotArray(
+            //item => item.Day,
+            //item => item.Type,
+            //items => items.Any() ? items.Sum(x => Double.Parse(x.Unit.ToString())) : 0
+            //);
+
+            return ListReturn;
         }
-
-    }
-
-    public class DalipoGraphParam
-    {
-        public DateTime Date { get; set; }
-        public String GroupCode { get; set; }
-        public String Unit { get; set; }
     }
 
     public class Categories
     {
-        public int WeekDay { get; set; }
-        public int Day { get; set; }
-        public double TotalUnit { get; set; }
-        public double Accu { get; set; }
-        public double Avg { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public List<Double> Unit { get; set; }
     }
-
 }
