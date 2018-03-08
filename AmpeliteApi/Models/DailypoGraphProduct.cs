@@ -8,9 +8,9 @@ namespace AmpeliteApi.Models
         public DateTime EDate { get; set; }
         public Int32 WeekDay { get; set; }
         public Int32 Day { get; set; }
-        public String Type { get; set; }
-        public String TeamCode { get; set; }
-        public String TeamName { get; set; }
-        public Decimal Unit { get; set; }
+        public string Type { get; set; }
+        public string TeamCode { get; set; }
+        public string TeamName { get; set; }
+        public decimal? Unit { get; set; }
     }
 }
