@@ -49,19 +49,37 @@ namespace AmpeliteApi.Controllers.Dailypo
         [HttpGet("byGroupCode/{groupCode}")]
         public async Task<IActionResult> GetDailypoGroupUnitByGroupCode([FromRoute] string groupCode)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var dailypoGroupUnit = await (from p in _context.DailypoGroupUnit
+                                              where (p.GroupCode == groupCode)
+                                              select new DailypoGroupUnit
+                                              {
+                                                  UnitId = p.UnitId,
+                                                  GroupCode = p.GroupCode,
+                                                  UnitCode = p.UnitCode,
+                                                  UnitValue = p.UnitValue,
+                                                  UnitName = p.UnitName,
+                                                  UnitTitle = p.UnitTitle
+                                              }).ToListAsync();
+
+                if (dailypoGroupUnit == null)
+                {
+                    return NotFound();
+                }
+                return Ok(dailypoGroupUnit);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
             }
 
-            var dailypoGroupUnit = await _context.DailypoGroupUnit.SingleOrDefaultAsync(m => m.GroupCode == groupCode);
 
-            if (dailypoGroupUnit == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(dailypoGroupUnit);
         }
 
         // PUT: api/DailypoGroupUnits/5
