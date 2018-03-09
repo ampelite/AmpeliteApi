@@ -16,7 +16,7 @@ using AmpeliteApi.Controllers.Users;
 namespace AmpeliteApi.Controllers.Users
 {
     [Produces("application/json")]
-    //[Route("api/Auth")]
+    [Route("api/Auth")]
     public class AuthController : Controller
     {
         private readonly db_AmpeliteContext _context;
@@ -26,10 +26,8 @@ namespace AmpeliteApi.Controllers.Users
         {
             _context = context;
         }
-
-        // POST: api/Auth
-        [Route("Auth/SignIn")]
-        [HttpPost]
+        
+        [HttpPost("SignIn")]
         public async Task<IActionResult> Authtication([FromBody] SignIn signin)
         {
             if (!ModelState.IsValid)

@@ -26,16 +26,16 @@ namespace AmpeliteApi.Controllers.Dailypo
 
         // GET: api/GraphProduct
         [HttpGet]
-        public IEnumerable<object> Get(DateTime Date, String GroupCode, String Unit)
-        {
+        public async Task<ActionResult> GetAsync(DateTime Date, String GroupCode, String Unit)
+        {           
             var p1 = Date.Date;
             var p2 = GroupCode;
             var p3 = Unit;
 
-            var Result = _context
+            var Result = await _context
                 .DailypoGraphProduct
                 .FromSql("sp_DAILYPO_GraphProduct @p0, @p1, @p2", parameters: new[] { p1.ToString("yyyy-MM-dd"), p2, p3 })
-                .ToArray();
+                .ToListAsync();
 
             var ListProduct = Result.Where(p => p.Type.Equals("product")).ToList();
             var ListSum = Result.Where(p => p.Type.Equals("sum")).ToList();
@@ -54,35 +54,29 @@ namespace AmpeliteApi.Controllers.Dailypo
                 Cate = new Categories();
                 Cate.Type = "product";
                 Cate.Name = Name;
-                Cate.Unit = ListTeam.Select(u => Double.Parse(u.Unit.ToString())).ToList();
+                Cate.Unit = ListTeam.Select(u => (double?)(u.Unit)).ToArray();
                 ListReturn.Add(Cate);                
             }
 
             Cate = new Categories();
             Cate.Type = "sum";
-            Cate.Name = "sum";
-            Cate.Unit = ListSum.Select(u => Double.Parse(u.Unit.ToString())).ToList();
+            Cate.Name = "Sum";
+            Cate.Unit = ListSum.Select(u => (double?)(u.Unit)).ToArray();
             ListReturn.Add(Cate);
 
             Cate = new Categories();
             Cate.Type = "accu";
-            Cate.Name = "accu";
-            Cate.Unit = ListAccu.Select(u => Double.Parse(u.Unit.ToString())).ToList();
+            Cate.Name = "Accu";
+            Cate.Unit = ListAccu.Select(u => (double?)(u.Unit)).ToArray();
             ListReturn.Add(Cate);
 
             Cate = new Categories();
             Cate.Type = "avg";
-            Cate.Name = "avg";
-            Cate.Unit = ListAvg.Select(u => Double.Parse(u.Unit.ToString())).ToList();
+            Cate.Name = "Avg";
+            Cate.Unit = ListAvg.Select(u => (double?)(u.Unit)).ToArray();
             ListReturn.Add(Cate);
 
-            //var pivotArray = Result.ToPivotArray(
-            //item => item.Day,
-            //item => item.Type,
-            //items => items.Any() ? items.Sum(x => Double.Parse(x.Unit.ToString())) : 0
-            //);
-
-            return ListReturn;
+            return Ok(ListReturn);
         }
     }
 
@@ -90,6 +84,6 @@ namespace AmpeliteApi.Controllers.Dailypo
     {
         public string Name { get; set; }
         public string Type { get; set; }
-        public List<Double> Unit { get; set; }
+        public double?[] Unit { get; set; }
     }
 }
