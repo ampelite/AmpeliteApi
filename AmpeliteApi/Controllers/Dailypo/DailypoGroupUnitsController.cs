@@ -45,10 +45,11 @@ namespace AmpeliteApi.Controllers.Dailypo
 
             return Ok(dailypoGroupUnit);
         }
-
+        
         [HttpGet("byGroupCode/{groupCode}")]
-        public async Task<IActionResult> GetDailypoGroupUnitByGroupCode([FromRoute] string groupCode)
+        public async Task<IActionResult> GetDailypoGroupUnitByGroupCode([FromRoute]  string groupCode)
         {
+            //[FromRoute]  string groupCode
             try
             {
                 if (!ModelState.IsValid)
