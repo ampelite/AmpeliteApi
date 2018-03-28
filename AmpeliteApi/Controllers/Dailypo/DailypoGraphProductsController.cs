@@ -5,29 +5,24 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Dynamic;
-
-using AmpeliteApi.Controllers.Pivot;
-
 using AmpeliteApi.Models;
 
-namespace AmpeliteApi.Controllers.Dailypo
+namespace AmpeliteApi.Dailypo
 {
     [Produces("application/json")]
-    [Route("api/GraphProduct")]
-    public class GraphProductController : Controller
+    [Route("api/Dailypo/Graph")]
+    public class DailypoGraphProductsController : Controller
     {
         private readonly db_AmpeliteContext _context;
 
-        public GraphProductController(db_AmpeliteContext context)
+        public DailypoGraphProductsController(db_AmpeliteContext context)
         {
             _context = context;
         }
-
-        // GET: api/GraphProduct
+        
         [HttpGet]
-        public async Task<ActionResult> GetAsync(DateTime Date, String GroupCode, String Unit)
-        {           
+        public async Task<ActionResult> Graph(DateTime Date, String GroupCode, String Unit)
+        {
             var p1 = Date.Date;
             var p2 = GroupCode;
             var p3 = Unit;
@@ -48,14 +43,14 @@ namespace AmpeliteApi.Controllers.Dailypo
             // select และ group TeamName ออกมา
             var ListTeamName = ListProduct.GroupBy(g => g.TeamName).Select(u => u.Key).ToList();
 
-            foreach(string Name in ListTeamName)
+            foreach (string Name in ListTeamName)
             {
                 var ListTeam = ListProduct.Where(u => u.TeamName.Equals(Name)).ToList();
                 Cate = new Categories();
                 Cate.Type = "product";
                 Cate.Name = Name;
                 Cate.Unit = ListTeam.Select(u => (double?)(u.Unit)).ToArray();
-                ListReturn.Add(Cate);                
+                ListReturn.Add(Cate);
             }
 
             Cate = new Categories();
@@ -85,7 +80,6 @@ namespace AmpeliteApi.Controllers.Dailypo
             public string Type { get; set; }
             public double?[] Unit { get; set; }
         }
+
     }
-
-
 }

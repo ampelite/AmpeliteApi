@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmpeliteApi.Models;
 
-namespace AmpeliteApi.Controllers.Dailypo
+namespace AmpeliteApi.Dailypo
 {
     [Produces("application/json")]
-    [Route("api/DailypoGroupUnits")]
+    [Route("api/Dailypo/GroupUnits")]
     public class DailypoGroupUnitsController : Controller
     {
         private readonly db_AmpeliteContext _context;
@@ -22,7 +22,7 @@ namespace AmpeliteApi.Controllers.Dailypo
 
         // GET: api/DailypoGroupUnits
         [HttpGet]
-        public IEnumerable<DailypoGroupUnit> GetDailypoGroupUnit()
+        public IEnumerable<DailypoGroupUnit> Get()
         {
             return _context.DailypoGroupUnit;
         }
@@ -46,10 +46,9 @@ namespace AmpeliteApi.Controllers.Dailypo
             return Ok(dailypoGroupUnit);
         }
         
-        [HttpGet("byGroupCode/{groupCode}")]
-        public async Task<IActionResult> GetDailypoGroupUnitByGroupCode([FromRoute]  string groupCode)
+        [HttpGet("ByGroupCode")]
+        public async Task<IActionResult> ByGroupCode(string groupCode)
         {
-            //[FromRoute]  string groupCode
             try
             {
                 if (!ModelState.IsValid)
@@ -79,8 +78,6 @@ namespace AmpeliteApi.Controllers.Dailypo
             {
                 return StatusCode(500, ex.Message);
             }
-
-
         }
 
         // PUT: api/DailypoGroupUnits/5

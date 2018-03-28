@@ -18,6 +18,7 @@ namespace AmpeliteApi.Models
         public virtual DbSet<HrEmployee> HrEmployee { get; set; }
 
         public virtual DbSet<DailypoGraphProduct> DailypoGraphProduct { get; set; }
+        public virtual DbSet<DailypoDetailDaily> DailypoDetailDaily { get; set; }
 
         // Unable to generate entity type for table 'dbo.GET_TransactionSO'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.GET_TransactionInv'. Please see the warning messages.
@@ -431,26 +432,7 @@ namespace AmpeliteApi.Models
                     .HasColumnName("update_at")
                     .HasColumnType("datetime");
             });
-
-            //modelBuilder.Entity<DailypoGraphProduct>(entity =>
-            //{
-            //    entity.HasKey(e => e.ID);
-
-            //    //entity.ToTable("sp_DAILYPO_GraphProduct");
-
-            //    entity.Property(e => e.ID).HasColumnName("ID");
-
-            //    entity.Property(e => e.EDate);
-
-            //    entity.Property(e => e._Day);
-
-            //    entity.Property(e => e.TeamCode);
-
-            //    entity.Property(e => e.TeamName);
-
-            //    entity.Property(e => e.Unit);
-
-            //});
+        
         }
 
       

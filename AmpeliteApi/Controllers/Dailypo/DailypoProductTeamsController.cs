@@ -24,7 +24,6 @@ namespace AmpeliteApi.Controllers.Dailypo
         [HttpGet]
         public IEnumerable<DailypoProductTeam> GetDailypoProductTeam()
         {
-            var a = _context.DailypoProductTeam;
             return _context.DailypoProductTeam;
         }
 
