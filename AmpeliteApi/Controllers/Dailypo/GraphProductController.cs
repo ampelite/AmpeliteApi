@@ -31,10 +31,15 @@ namespace AmpeliteApi.Controllers.Dailypo
             var p1 = Date.Date;
             var p2 = GroupCode;
             var p3 = Unit;
+            var stored = "sp_DAILYPO_GraphProduct";
+            if (GroupCode == "saleteam")
+            {
+                stored = "sp_DAILYPO_GraphTeamSale";
+            }
 
             var Result = await _context
                 .DailypoGraphProduct
-                .FromSql("sp_DAILYPO_GraphProduct @p0, @p1, @p2", parameters: new[] { p1.ToString("yyyy-MM-dd"), p2, p3 })
+                .FromSql($"{stored} @p0, @p1, @p2", parameters: new[] { p1.ToString("yyyy-MM-dd"), p2, p3 })
                 .ToListAsync();
 
             var ListProduct = Result.Where(p => p.Type.Equals("product")).ToList();
