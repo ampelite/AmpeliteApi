@@ -10,7 +10,7 @@ using AmpeliteApi.Models;
 namespace AmpeliteApi.Controllers.Dailypo
 {
     [Produces("application/json")]
-    [Route("api/DailypoProductTeams")]
+    [Route("api/Dailypo/ProductTeams")]
     public class DailypoProductTeamsController : Controller
     {
         private readonly db_AmpeliteContext _context;

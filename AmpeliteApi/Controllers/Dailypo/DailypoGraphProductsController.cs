@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmpeliteApi.Models;
 
-namespace AmpeliteApi.Dailypo
+namespace AmpeliteApi.Controllers.Dailypo
 {
     [Produces("application/json")]
     [Route("api/Dailypo/Graph")]
@@ -21,15 +21,17 @@ namespace AmpeliteApi.Dailypo
         }
         
         [HttpGet]
-        public async Task<ActionResult> Graph(DateTime Date, String GroupCode, String Unit)
+        public async Task<IActionResult> Graph(DateTime Date, String GroupCode, String Unit)
         {
             var p1 = Date.Date;
             var p2 = GroupCode;
             var p3 = Unit;
 
+            var stored = (p2 == "saleteam") ? "sp_DAILYPO_GraphTeamSale" : "sp_DAILYPO_GraphProduct";
+
             var Result = await _context
                 .DailypoGraphProduct
-                .FromSql("sp_DAILYPO_GraphProduct @p0, @p1, @p2", parameters: new[] { p1.ToString("yyyy-MM-dd"), p2, p3 })
+                .FromSql(stored + " @p0, @p1, @p2", parameters: new[] { p1.ToString("yyyy-MM-dd"), p2, p3 })
                 .ToListAsync();
 
             var ListProduct = Result.Where(p => p.Type.Equals("product")).ToList();

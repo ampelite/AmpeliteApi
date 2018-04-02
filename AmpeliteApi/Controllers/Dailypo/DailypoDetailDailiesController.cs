@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmpeliteApi.Models;
 
-namespace AmpeliteApi.Dailypo
+namespace AmpeliteApi.Controllers.Dailypo
 {
     [Produces("application/json")]
     [Route("api/Dailypo/DetailDaily")]

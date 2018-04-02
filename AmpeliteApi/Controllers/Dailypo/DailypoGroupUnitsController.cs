@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmpeliteApi.Models;
 
-namespace AmpeliteApi.Dailypo
+namespace AmpeliteApi.Controllers.Dailypo
 {
     [Produces("application/json")]
     [Route("api/Dailypo/GroupUnits")]
@@ -45,7 +45,7 @@ namespace AmpeliteApi.Dailypo
 
             return Ok(dailypoGroupUnit);
         }
-        
+
         [HttpGet("ByGroupCode")]
         public async Task<IActionResult> ByGroupCode(string groupCode)
         {
