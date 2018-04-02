@@ -35,9 +35,10 @@ namespace AmpeliteApi.Controllers.Dailypo
                 .ToListAsync();
 
             var ListProduct = Result.Where(p => p.Type.Equals("product")).ToList();
-            var ListSum = Result.Where(p => p.Type.Equals("sum")).ToList();
-            var ListAccu = Result.Where(p => p.Type.Equals("accu")).ToList();
-            var ListAvg = Result.Where(p => p.Type.Equals("avg")).ToList();
+
+            var ListSum = Result.Where(p => p.Type.Equals("sum")).OrderBy(x => x.Day).ToList();
+            var ListAccu = Result.Where(p => p.Type.Equals("accu")).OrderBy(x => x.Day).ToList();
+            var ListAvg = Result.Where(p => p.Type.Equals("avg")).OrderBy(x => x.Day).ToList();
 
             var ListReturn = new List<object>();
             var Cate = new Categories();
@@ -47,7 +48,7 @@ namespace AmpeliteApi.Controllers.Dailypo
 
             foreach (string Name in ListTeamName)
             {
-                var ListTeam = ListProduct.Where(u => u.TeamName.Equals(Name)).ToList();
+                var ListTeam = ListProduct.Where(u => u.TeamName.Equals(Name)).OrderBy(x => x.Day).ToList();
                 Cate = new Categories();
                 Cate.Type = "product";
                 Cate.Name = Name;
@@ -81,6 +82,12 @@ namespace AmpeliteApi.Controllers.Dailypo
             public string Name { get; set; }
             public string Type { get; set; }
             public double?[] Unit { get; set; }
+        }
+
+        public class Units
+        {
+            public int Day { get; set; }
+            public double Unit { get; set; }
         }
 
     }
