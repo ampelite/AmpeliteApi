@@ -82,6 +82,7 @@ namespace AmpeliteReport.Reports.PoDaily
                 }                
 
                 rptDoc.Load(Server.MapPath(filePath));
+                rptDoc.Refresh();
                 rptDoc.SetDataSource(dt);
                 rptDoc.SetParameterValue("@GroupCode", groupCode);
                 rptDoc.SetParameterValue("@TeamName", teamName);
@@ -126,6 +127,7 @@ namespace AmpeliteReport.Reports.PoDaily
                     : ExportFormatType.PortableDocFormat);
 
                 rptDoc.Load(Server.MapPath("./ByTeamSale.rpt"));
+                rptDoc.Refresh();
                 rptDoc.SetDataSource(dt);
                 rptDoc.SetParameterValue("@GroupCode", groupCode);
                 rptDoc.SetParameterValue("@TeamName", teamName);
