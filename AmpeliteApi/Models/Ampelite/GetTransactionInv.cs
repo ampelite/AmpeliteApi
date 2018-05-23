@@ -5,8 +5,8 @@ namespace AmpeliteApi.Models
 {
     public partial class GetTransactionInv
     {
-        public int Id { get; set; }
-        public DateTime? DocuDate { get; set; }
+        public string Id { get; set; }
+        public DateTime DocuDate { get; set; }
         public string DocuNo { get; set; }
         public string InvNo { get; set; }
         public int? GoodCateId { get; set; }

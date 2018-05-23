@@ -5,13 +5,6 @@ namespace AmpeliteApi.Models
 {
     public partial class HrEmployee
     {
-        public HrEmployee()
-        {
-            AuthDevices = new HashSet<AuthDevices>();
-            AuthPermissions = new HashSet<AuthPermissions>();
-            AuthTransactions = new HashSet<AuthTransactions>();
-        }
-
         public int Id { get; set; }
         public int SEmpId { get; set; }
         public string SEmpOrgLevel2 { get; set; }
@@ -65,9 +58,5 @@ namespace AmpeliteApi.Models
         public DateTime? TYtdlastCloseDate { get; set; }
         public byte[] EmpImage { get; set; }
         public DateTime UpdateAt { get; set; }
-
-        public ICollection<AuthDevices> AuthDevices { get; set; }
-        public ICollection<AuthPermissions> AuthPermissions { get; set; }
-        public ICollection<AuthTransactions> AuthTransactions { get; set; }
     }
 }

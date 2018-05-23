@@ -5,7 +5,7 @@ namespace AmpeliteApi.Models
 {
     public partial class GetTransactionSo
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public int Soid { get; set; }
         public DateTime DocuDate { get; set; }
         public string DocuNo { get; set; }
@@ -22,6 +22,9 @@ namespace AmpeliteApi.Models
         public int? GoodClassId { get; set; }
         public string GoodClassCode { get; set; }
         public string GoodClassName { get; set; }
+        public int? GoodPattnId { get; set; }
+        public string GoodPattnCode { get; set; }
+        public string GoodPattnName { get; set; }
         public int? GoodColorId { get; set; }
         public string GoodColorCode { get; set; }
         public string GoodColorName { get; set; }
@@ -37,6 +40,7 @@ namespace AmpeliteApi.Models
         public decimal GoodQty2 { get; set; }
         public decimal GoodCompareQty { get; set; }
         public decimal GoodPrice2 { get; set; }
+        public decimal? GoodPrice3 { get; set; }
         public int? GoodUnitId2 { get; set; }
         public string GoodUnitName { get; set; }
         public int? BrchId { get; set; }

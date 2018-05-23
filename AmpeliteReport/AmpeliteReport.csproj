@@ -73,6 +73,7 @@
     <None Include="Properties\PublishProfiles\AmpeliteReport.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -81,7 +82,9 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Reports\PoDaily\Index.aspx" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.asax.cs">
@@ -98,6 +101,7 @@
       <DependentUpon>ByCustomerOrder.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\PoDaily\ByProduct.cs">
       <AutoGen>True</AutoGen>
