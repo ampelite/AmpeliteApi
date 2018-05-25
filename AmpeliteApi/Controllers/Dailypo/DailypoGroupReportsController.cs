@@ -22,9 +22,14 @@ namespace AmpeliteApi.Controllers.Dailypo
 
         // GET: api/DailypoGroupReports
         [HttpGet]
-        public IEnumerable<DailypoGroupReport> GetDailypoGroupReport()
+        public IActionResult GetDailypoGroupReport()
         {
-            return _context.DailypoGroupReport;
+            var p = _context.DailypoGroupReport.ToList();
+
+            if (p == null)
+                return NoContent();
+
+            return Ok(p);
         }
 
         // GET: api/DailypoGroupReports/5
