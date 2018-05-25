@@ -11,7 +11,5 @@ namespace AmpeliteApi.Models
         public bool AuthPStatus { get; set; }
         public DateTime AuthPUpdateAt { get; set; }
         public string AuthPUpdateBy { get; set; }
-
-        public HrEmployee SEmp { get; set; }
     }
 }

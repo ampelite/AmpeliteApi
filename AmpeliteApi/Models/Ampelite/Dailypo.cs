@@ -5,10 +5,7 @@ using System.Threading.Tasks;
 
 namespace AmpeliteApi.Models.Dailypo
 {
-    //public class Dailypo
-    //{
-    //}
-
+  
     public class DailyDetail
     {
         public Int64 ID { get; set; }

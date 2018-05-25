@@ -5,11 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Dynamic;
-
-using AmpeliteApi.Controllers.Pivot;
-
-using AmpeliteApi.Models;
+using AmpeliteApi.Data;
 
 namespace AmpeliteApi.Controllers.Dailypo
 {

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
-
+using AmpeliteApi.Data;
 using AmpeliteApi.Models;
 
 using AmpeliteApi.Controllers.Users;
@@ -60,8 +60,8 @@ namespace AmpeliteApi.Controllers.Users
                     {
                         var payload = new Dictionary<string, object>
                             {
-                                { "UserID", customer[0].UserId},
-                                { "Username", customer[0].UserName },
+                                { "userId", customer[0].UserId},
+                                { "userName", customer[0].UserName },
                             };
                         var token = Auth.JwtEncoder(payload);
                         var obj = new Dictionary<string, object>
