@@ -59,7 +59,7 @@ namespace AmpeliteApi.Controllers.SalePromotion
             try
             {
                 var p1 = sDate.Date;
-                var p2 = sDate.Date;
+                var p2 = eDate.Date;
 
                 var list = ctxAmpelite
                     .SpSaleproFrpLoyalty
