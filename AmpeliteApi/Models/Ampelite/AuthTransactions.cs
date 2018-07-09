@@ -3,13 +3,11 @@ using System.Collections.Generic;
 
 namespace AmpeliteApi.Models
 {
-    public partial class AuthDevices
+    public partial class AuthTransactions
     {
-        public int AuthDId { get; set; }
+        public int AuthTId { get; set; }
         public int SEmpId { get; set; }
         public string AuthDMacAddress { get; set; }
-        public string AuthDDevice { get; set; }
-
-        public HrEmployee SEmp { get; set; }
+        public DateTime AuthTLastLoginDate { get; set; }
     }
 }

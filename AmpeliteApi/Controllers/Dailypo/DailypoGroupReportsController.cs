@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AmpeliteApi.Data;
 using AmpeliteApi.Models;
 
 namespace AmpeliteApi.Controllers.Dailypo
 {
     [Produces("application/json")]
-    [Route("api/DailypoGroupReports")]
+    [Route("api/Dailypo/GroupReports")]
     public class DailypoGroupReportsController : Controller
     {
         private readonly db_AmpeliteContext _context;
@@ -22,9 +23,14 @@ namespace AmpeliteApi.Controllers.Dailypo
 
         // GET: api/DailypoGroupReports
         [HttpGet]
-        public IEnumerable<DailypoGroupReport> GetDailypoGroupReport()
+        public IActionResult GetDailypoGroupReport()
         {
-            return _context.DailypoGroupReport;
+            var p = _context.DailypoGroupReport.ToList();
+
+            if (p == null)
+                return NoContent();
+
+            return Ok(p);
         }
 
         // GET: api/DailypoGroupReports/5
