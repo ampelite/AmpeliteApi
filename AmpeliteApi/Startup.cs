@@ -32,6 +32,15 @@ namespace AmpeliteApi
             services.AddDbContext<db_AmpelwebContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("AmpelwebConnection")));
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
+
             services.AddMvc();
         }
 
