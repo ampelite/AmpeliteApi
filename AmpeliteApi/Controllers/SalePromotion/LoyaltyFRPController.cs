@@ -33,12 +33,12 @@ namespace AmpeliteApi.Controllers.SalePromotion
             try
             {
                 var dateNow = DateTime.Now.Date;
-                var sDate = dateNow.AddDays(-(dateNow.Day - 1));
-                var eDate = DateTime.Now.Date;
+                var month = dateNow.Month;
+                var year = dateNow.Year;
 
                 var list = ctxAmpelite
                     .SpSaleproFrpLoyalty
-                    .FromSql("sp_SALEPRO_FRPLoyalty @p0, @p1", parameters: new[] { sDate.ToString("yyyy-MM-dd"), eDate.ToString("yyyy-MM-dd") })
+                    .FromSql("sp_SALEPRO_FRPLoyalty @p0, @p1", parameters: new[] { month.ToString(), year.ToString() })
                     .ToList();
 
                 if (list == null)
@@ -54,16 +54,14 @@ namespace AmpeliteApi.Controllers.SalePromotion
         }
 
         [HttpGet("GetByCon")]
-        public IActionResult GetByCon(DateTime sDate, DateTime eDate)
+        public IActionResult GetByCon(int month, int year)
         {
             try
             {
-                var p1 = sDate.Date;
-                var p2 = eDate.Date;
 
                 var list = ctxAmpelite
                     .SpSaleproFrpLoyalty
-                    .FromSql("sp_SALEPRO_FRPLoyalty @p0, @p1", parameters: new[] { p1.ToString("yyyy-MM-dd"), p2.ToString("yyyy-MM-dd") })
+                    .FromSql("sp_SALEPRO_FRPLoyalty @p0, @p1", parameters: new[] { month.ToString(), year.ToString() })
                     .ToList();
 
                 if (list == null)
@@ -178,12 +176,6 @@ namespace AmpeliteApi.Controllers.SalePromotion
         public string Get(int id)
         {
             return "value";
-        }
-
-        public class IDateBetween
-        {
-            public DateTime Sdate { get; set; }
-            public DateTime Edate { get; set; }
         }
 
         public class IFrpLoyalty
