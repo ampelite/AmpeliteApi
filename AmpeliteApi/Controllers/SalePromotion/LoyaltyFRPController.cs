@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using AmpeliteApi.Data;
 using AmpeliteApi.Models;
 using Microsoft.EntityFrameworkCore;
+using AmpeliteApi.Models.Ampelite;
 
 namespace AmpeliteApi.Controllers.SalePromotion
 {
@@ -36,15 +37,9 @@ namespace AmpeliteApi.Controllers.SalePromotion
                 var month = dateNow.Month;
                 var year = dateNow.Year;
 
-                var list = ctxAmpelite
-                    .SpSaleproFrpLoyalty
-                    .FromSql("sp_SALEPRO_FRPLoyalty @p0, @p1", parameters: new[] { month.ToString(), year.ToString() })
-                    .ToList();
+                var target = ctxAmpelite.SaleProPromotionTargets.Where(x => x.SubID == _subId).ToList();
 
-                if (list == null)
-                    return NoContent();
-
-                return Ok(list);
+                return Ok(target);
 
             }
             catch (Exception ex)
@@ -61,133 +56,82 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
                 var list = ctxAmpelite
                     .SpSaleproFrpLoyalty
-                    .FromSql("sp_SALEPRO_FRPLoyalty @p0, @p1", parameters: new[] { month.ToString(), year.ToString() })
-                    .ToList();
+                    .FromSql("sp_SALEPRO_FRPLoyalty @p0, @p1", new[] { month.ToString(), year.ToString() })
+                    .Select(x => new SaleProBalanceHD
+                    {
+                        CustCode = x.CustCode,
+                        CustName = x.CustName,
+                        EmpCode = x.EmpCode,
+                        EmpName = x.EmpName,
+                        GoodQty2 = x.GoodQty2,
+                        GoodAmnt = x.GoodAmnt
+                    }).ToList();
 
                 if (list == null)
                     return NoContent();
 
-                return Ok(list);
+                var rewards = ctxAmpelite.SaleProPromotionTargets
+                .Where(x => x.SubID == _subId)
+                .Select(x => new SaleProBalanceDT
+                {
+                    TargetID = x.TargetID,
+                    Target = x.Target,
+                    Reward = x.Reward,
+                    GiftVoucher = x.GiftVoucher,
+                    Discount = x.Discount,
+                    Bonus = x.Bonus,
+                    IsBonus = x.IsBonus,
+                    Unit = x.Unit
+                }).ToList();
+
+                var frpLoyalty = new List<SaleProBalanceHD>();
+
+                list.ForEach(frp =>
+                {
+                    
+                    var dt = new List<SaleProBalanceDT>();
+                    rewards.ForEach(rew =>
+                    {
+                        if (rew.Unit == 1 && frp.GoodQty2 >= rew.Target)
+                        {
+                            dt.Add(rew);
+                        } 
+                        else if (rew.Unit == 2 && frp.GoodAmnt >= rew.Target)
+                        {
+                            dt.Add(rew);
+                        }
+                        else                     
+                        {
+                            var _dt = new SaleProBalanceDT
+                            {
+                                IsBonus = rew.IsBonus
+                            };
+                            dt.Add(_dt);
+                        }
+                    });
+
+                    var _frp = new SaleProBalanceHD
+                    {
+                        CustCode = frp.CustCode,
+                        CustName = frp.CustName,
+                        EmpCode = frp.EmpCode,
+                        EmpName = frp.EmpName,
+                        GoodQty2 = frp.GoodQty2,
+                        GoodAmnt = frp.GoodAmnt,
+                        BalancesDT = dt
+                    };
+
+                    frpLoyalty.Add(_frp);
+                });
+
+                return Ok(frpLoyalty);
 
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
-        }
+         }
 
-        private IEnumerable<IFrpLoyalty> Search(DateTime sDate, DateTime eDate)
-        {
-
-            var ampelTeam_ = ctxAmpelweb.AmpelTeam
-                .Where(x => x.TeamCode.Equals(_teamCode))
-                .Select(x => x.SaleCode)
-                .Distinct().ToList();
-
-            var goodCate_ = ctxAmpelite.GoodCateCode
-                .Where(x => x.SubId == _subId && x.Status.Equals(_status))
-                .Select(x => x.GoodCatecode)
-                .Distinct().ToList();
-
-            var pattn_ = new List<SaleproGoodPattn>(
-                ctxAmpelite.SaleproGoodPattn
-                .Where(x => x.Status.Equals(_status))
-                .ToList());
-
-            var frpCostRf_ = new List<SaleproFrpcostRf>(
-                ctxAmpelite.SaleproFrpcostRf
-                .Where(x => x.Status.EndsWith(_status))
-                .ToList());
-
-
-            var soLoyalty_ = (from tranSo in ctxAmpelite.GetTransactionSo
-
-                              join pt in pattn_ on tranSo.GoodPattnCode equals pt.GoodPattnCode into a1
-                              from gpattn in a1.DefaultIfEmpty()
-
-                              where (tranSo.DocuDate.Date >= sDate && tranSo.DocuDate.Date <= eDate) &&
-                              ampelTeam_.Contains(tranSo.EmpCode) &&
-                              goodCate_.Contains(tranSo.ProductCode)
-
-                              group tranSo by new
-                              {
-                                  tranSo.CustPono,
-                                  tranSo.CustCode,
-                                  tranSo.CustName,
-                                  tranSo.ProductCode,
-                                  tranSo.Product,
-                                  tranSo.GoodPattnCode,
-                                  gpattn.FactorCp,
-                                  tranSo.GoodPrice2,
-                                  tranSo.GoodPrice3,
-                                  tranSo.EmpCode,
-                                  tranSo.EmpNameEng
-                              } into g
-
-                              select new
-                              {
-                                  custPoNo = g.Key.CustPono,
-                                  custCode = g.Key.CustCode,
-                                  custName = g.Key.CustName.Trim(),
-                                  goodCateCode = g.Key.ProductCode,
-                                  goodCateName = g.Key.Product,
-                                  goodPattnCode = g.Key.GoodPattnCode,
-                                  goodPrice2 = g.Key.GoodPrice2,
-                                  goodPrice3 = g.Key.GoodPrice3,
-                                  empCode = g.Key.EmpCode,
-                                  empName = g.Key.EmpNameEng,
-                                  factorCp = g.Key.FactorCp,
-                                  goodCompareQty = g.Sum(x => x.GoodCompareQty),
-                                  goodQty2 = (g.Key.FactorCp == null) ? g.Sum(x => x.GoodQty2) : g.Sum(x => x.GoodQty2) * g.Key.FactorCp,
-                                  goodAmnt = g.Sum(x => x.GoodAmnt),
-                                  rf = g.Key.GoodPrice2 - ((g.Key.GoodPrice3 == null ? 0 : g.Key.GoodPrice3) / 100)
-                              }).ToList();
-
-            var finally_ = (from soLoyal in soLoyalty_
-
-                            join costRf in frpCostRf_ on soLoyal.goodCateCode equals costRf.GoodCateCode into a1
-                            from byCostRf in a1.DefaultIfEmpty()
-
-                            group soLoyal by new
-                            {
-                                soLoyal.custCode,
-                                soLoyal.custName,
-                                soLoyal.empCode,
-                                soLoyal.empName,
-                                soLoyal.rf
-                            } into g
-
-                            select new IFrpLoyalty
-                            {
-                                CustCode = g.Key.custCode,
-                                CustName = g.Key.custName,
-                                EmpCode = g.Key.empCode,
-                                EmpName = g.Key.empName,
-                                Rf = g.Key.rf,
-                                GoodQty2 = g.Sum(x => x.goodQty2),
-                                GoodCompareQty = g.Sum(x => x.goodCompareQty),
-                                GoodAmnt = g.Sum(x => x.goodAmnt)
-                            }).ToList();
-            return finally_;
-        }
-
-        // GET: api/LoyaltyFRP/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        public class IFrpLoyalty
-        {
-            public string CustCode { get; set; }
-            public string CustName { get; set; }
-            public string EmpCode { get; set; }
-            public string EmpName { get; set; }
-            public decimal? Rf { get; set; }
-            public decimal? GoodQty2 { get; set; }
-            public decimal GoodCompareQty { get; set; }
-            public decimal GoodAmnt { get; set; }
-        }
     }
 }

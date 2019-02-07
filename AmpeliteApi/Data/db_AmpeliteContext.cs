@@ -33,6 +33,7 @@ namespace AmpeliteApi.Data
         public virtual DbSet<SaleproGoodPattn> SaleproGoodPattn { get; set; }
         public virtual DbSet<SalePromotionReport> SalePromotionReport { get; set; }
         public virtual DbSet<SaleproTrussScw> SaleproTrussScw { get; set; }
+        public virtual DbSet<SaleProPromotionTarget> SaleProPromotionTargets { get; set; }
 
         // Store procedure
         public virtual DbSet<DailypoGraphProduct> DailypoGraphProduct { get; set; }
@@ -1105,6 +1106,29 @@ namespace AmpeliteApi.Data
                     .IsRequired()
                     .HasColumnName("SUB_ID")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<SaleProPromotionTarget>(entity =>
+            {
+                entity.ToTable("SALEPRO_PromotionTarget");
+                entity.HasKey(e => e.TargetID);
+                entity.Property(e => e.TargetID);
+                entity.Property(e => e.Target);
+                entity.Property(e => e.Unit);
+                entity.Property(e => e.UnitDesc).HasMaxLength(50);
+                entity.Property(e => e.Description).HasMaxLength(255);
+                entity.Property(e => e.Reward);
+                entity.Property(e => e.Discount);
+                entity.Property(e => e.GiftVoucher);
+                entity.Property(e => e.Bonus);
+                entity.Property(e => e.IsBonus).HasColumnType("bit").HasDefaultValue(0);
+                entity.Property(e => e.CostPromotion);
+                entity.Property(e => e.Status).HasColumnType("bit").HasDefaultValue(1);
+                entity.Property(e => e.SubID).HasColumnName("SUB_ID").HasMaxLength(50);
+                entity.Property(e => e.CreateBy).HasMaxLength(50);
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
+                entity.Property(e => e.UpdateBy).HasMaxLength(50);
+                entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             });
         }
     }
