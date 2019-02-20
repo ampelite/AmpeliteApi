@@ -15,6 +15,8 @@ namespace AmpeliteApi.Models.Ampelite
         public bool IsBonus { get; set; }
         public string CostPromotion { get; set; }
         public bool Status { get; set; }
+        public int Month { get; set; }
+        public int Year { get; set; }
         public string SubID { get; set; }
         public string CreateBy { get; set; }
         public DateTime? CreateDate { get; set; }

@@ -14,5 +14,7 @@ namespace AmpeliteApi.Models.Ampelite
         public decimal GoodQty2 { get; set; }
         public decimal GoodCompareQty { get; set; }
         public decimal GoodAmnt { get; set; }
+        public int BHDID { get; set; }
+        public bool IsConfirm { get; set; }
     }
 }
