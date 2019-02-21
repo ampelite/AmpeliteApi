@@ -120,23 +120,29 @@ namespace AmpeliteApi.Data
             modelBuilder.Entity<CodePromotion>(entity =>
             {
                 entity.HasKey(e => e.SubId);
-
                 entity.ToTable("Code_Promotion");
-
                 entity.Property(e => e.SubId)
                     .HasColumnName("SUB_ID")
-                    .HasMaxLength(4)
+                    .HasColumnType("nvarchar(4)")
                     .ValueGeneratedNever();
-
-                entity.Property(e => e.CodeMainPro).HasColumnName("Code_MainPro");
-
-                entity.Property(e => e.MainPro).HasMaxLength(20);
-
+                entity.Property(e => e.CodeMainPro)
+                    .HasColumnName("Code_MainPro");
+                entity.Property(e => e.MainPro)
+                    .HasColumnType("nvarchar(20)");
                 entity.Property(e => e.SubCodePro)
                     .HasColumnName("SUB_CodePro")
+                    .HasColumnType("nvarchar(50)")
                     .HasMaxLength(50);
-
-                entity.Property(e => e.SubPromotion).HasColumnName("SUB_Promotion");
+                entity.Property(e => e.SubPromotion)
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("SUB_Promotion");
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+                entity.Property(e => e.Status).HasColumnType("bit");
+                entity.Property(e => e.CreateBy).HasMaxLength(50);
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
+                entity.Property(e => e.UpateBy).HasColumnType("datetime");
+                entity.Property(e => e.UpateDate).HasMaxLength(50);
             });
 
             modelBuilder.Entity<CostRf>(entity =>
