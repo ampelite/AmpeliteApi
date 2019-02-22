@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AmpeliteApi.Models;
 using AmpeliteApi.Data;
-using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -36,7 +35,6 @@ namespace AmpeliteApi.Controllers.SalePromotion
         {
             try
             {
-
                 var promotion = ctx.CodePromotion.FirstOrDefault(x => x.SubId == subId);
                 var mainProDropDowns = ctx.CodePromotion
                 .Select(x => new DropDowns
