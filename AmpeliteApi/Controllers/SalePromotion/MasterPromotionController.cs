@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AmpeliteApi.Models;
 using AmpeliteApi.Data;
+using AmpeliteApi.Services.SalePromotion;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,11 +15,15 @@ namespace AmpeliteApi.Controllers.SalePromotion
     public class MasterPromotionController : Controller
     {
         private db_AmpeliteContext ctx;
+        private ICodePromotionService iCodeProService;
+
         public MasterPromotionController (
-            db_AmpeliteContext context
+            db_AmpeliteContext context,
+            ICodePromotionService iCodePromotionService
         )
         {
             ctx = context;
+            iCodeProService = iCodePromotionService;
         }
 
         // GET: api/values
@@ -36,13 +41,7 @@ namespace AmpeliteApi.Controllers.SalePromotion
             try
             {
                 var promotion = ctx.CodePromotion.FirstOrDefault(x => x.SubId == subId);
-                var mainProDropDowns = ctx.CodePromotion
-                .Select(x => new DropDowns
-                {
-                    Value = x.CodeMainPro.ToString(),
-                    Text = x.MainPro
-                }).Distinct()
-                .ToList();
+                var mainProDropDowns = iCodeProService.MainPromotionDropDowns();
                 var res = new MainProResponse
                 {
                     Promotion = promotion,
@@ -73,7 +72,6 @@ namespace AmpeliteApi.Controllers.SalePromotion
                         .ToString()
                         .PadLeft(4, '0');
                 }
-
 
                 codePro.SubId = subId;
                 codePro.SubCodePro = GetSubCodePro((int)codePro.CodeMainPro);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AmpeliteApi.Data;
+using AmpeliteApi.Services.SalePromotion;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,9 @@ namespace AmpeliteApi
                options.UseSqlServer(Configuration.GetConnectionString("AmpelwebConnection")));
 
             services.AddMvc();
+
+            services.AddTransient<ICodePromotionService, CodePromotionService>();
+            services.AddTransient<IPromotionTargetService, PromotionTargetService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

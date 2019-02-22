@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AmpeliteApi.Data;
+using AmpeliteApi.Models;
 using AmpeliteApi.Models.Ampelite;
+using AmpeliteApi.Services.SalePromotion;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,11 +17,18 @@ namespace AmpeliteApi.Controllers.SalePromotion
     public class MasterPromotionTargetController : Controller
     {
         private db_AmpeliteContext ctx;
+        private IPromotionTargetService iProTargetService;
+        private ICodePromotionService iCodeProService;
+
         public MasterPromotionTargetController(
-            db_AmpeliteContext context
+            db_AmpeliteContext context,
+            IPromotionTargetService iPromotionTargetService,
+            ICodePromotionService iCodePromotionService
         )
         {
             ctx = context;
+            iProTargetService = iPromotionTargetService;
+            iCodeProService = iCodePromotionService;
         }
 
         // GET: api/values
@@ -48,28 +58,85 @@ namespace AmpeliteApi.Controllers.SalePromotion
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("GetByCon")]
+        public IActionResult GetByCon(int? targetId)
         {
-            return "value";
+            try
+            {
+                var unitDropDowns = iProTargetService.UnitDropDowns();
+                var subPromotionDropDowns = iCodeProService.SubPromotionDropDowns();
+                var proTarget = ctx.SaleProPromotionTargets
+                    .FirstOrDefault(x => x.TargetID == targetId);
+
+                var response = new PromotionTargetResponse
+                {
+                    SubPromotionDropDowns = subPromotionDropDowns,
+                    UnitDropDowns = unitDropDowns,
+                    PromotionTarget = proTarget
+                };
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+           
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public IActionResult Post([FromBody]SaleProPromotionTarget tg)
         {
+            try
+            {
+                tg.CreateDate = DateTime.Now;
+                ctx.SaleProPromotionTargets.Add(tg);
+                ctx.SaveChanges();
+
+                var obj = new Dictionary<string, object> {
+                    {"targetID", tg.TargetID}
+                };
+                return Ok(obj);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody]SaleProPromotionTarget tg)
         {
+            tg.UpdateDate = DateTime.Now;
+
+            if (!SaleProPromotionTargetExists(tg.TargetID))
+                return NotFound();
+
+            ctx.Entry(tg).State = EntityState.Modified;
+
+            try
+            {
+                await ctx.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        private bool SaleProPromotionTargetExists(int targetId)
         {
+            return ctx.SaleProPromotionTargets.Any(e => e.TargetID == targetId);
+        }
+
+        public class PromotionTargetResponse
+        {
+            public List<DropDowns> SubPromotionDropDowns { get; set; }
+            public List<DropDowns> UnitDropDowns { get; set; }
+            public SaleProPromotionTarget PromotionTarget { get; set; }
         }
 
         public class ListPromotionTarget
