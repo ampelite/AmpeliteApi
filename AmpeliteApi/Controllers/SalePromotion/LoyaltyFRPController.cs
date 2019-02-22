@@ -111,7 +111,13 @@ namespace AmpeliteApi.Controllers.SalePromotion
                         dt.Unit = tg.Unit;
                         dt.BalanceHD = null;
 
-                        if (tg.Unit == 1 && x.GoodQty2 >= tg.Target)
+                        if (tg.IsBonus && x.GoodAmnt >= tg.Target)
+                        {
+                            dt.Bonus = tg.Bonus;
+                            dt.BonusSelect = dt.BHDID == 0 || dt.BonusSelect;
+
+                        }
+                        else if (!tg.IsBonus && x.GoodQty2 >= tg.Target)
                         {
                             dt.Reward = tg.Reward;
                             dt.GiftVoucher = tg.GiftVoucher;
@@ -119,12 +125,6 @@ namespace AmpeliteApi.Controllers.SalePromotion
                             dt.RewardSelect = dt.BHDID == 0 || dt.RewardSelect;
                             dt.GiftSelect = dt.BHDID == 0 || dt.GiftSelect;
                             dt.DiscountSelect = dt.BHDID == 0 || dt.DiscountSelect;
-
-                        } 
-                        else if (tg.Unit == 2 && x.GoodAmnt >= tg.Target)
-                        {
-                            dt.Bonus = tg.Bonus;
-                            dt.BonusSelect = dt.BHDID == 0 || dt.BonusSelect;
                         }
 
                         dtList.Add(dt);
