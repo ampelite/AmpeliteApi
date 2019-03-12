@@ -87,17 +87,20 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
             var getGoodPattn = await _context.GetTransactionInv
                 .Where(w => w.GoodPattnCode == saleproGoodPattn.GoodPattnCode)
-                .Select(s => new { s.GoodPattnName })
+                .GroupBy(g => new { g.GoodPattnName })
+                .Select(s => new { s.Key.GoodPattnName })
                 .ToListAsync();
 
             var getGoodClass = await _context.GetTransactionInv
                 .Where(w => w.GoodClassCode == saleproGoodPattn.GoodClassCode)
-                .Select(s => new { s.GoodClassName })
+                .GroupBy(g => new { g.GoodClassName })
+                .Select(s => new { s.Key.GoodClassName })
                 .ToListAsync();
 
             var getSubCodePro = await _context.CodePromotion
                 .Where(w => w.SubId == saleproGoodPattn.SubId)
-                .Select(s => new { s.SubCodePro })
+                .GroupBy(g => new { g.SubCodePro })
+                .Select(s => new { s.Key.SubCodePro })
                 .ToListAsync();
 
             saleproGoodPattn.GoodPattnName = getGoodPattn[0].GoodPattnName;
@@ -136,17 +139,20 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
             var getGoodPattn = await _context.GetTransactionInv
                 .Where(w => w.GoodPattnCode == saleproGoodPattn.GoodPattnCode)
-                .Select(s => new { s.GoodPattnName })
+                .GroupBy(g => new { g.GoodPattnName })
+                .Select(s => new { s.Key.GoodPattnName })
                 .ToListAsync();
 
             var getGoodClass = await _context.GetTransactionInv
                 .Where(w => w.GoodClassCode == saleproGoodPattn.GoodClassCode)
-                .Select(s => new { s.GoodClassName })
+                .GroupBy(g => new { g.GoodClassName })
+                .Select(s => new { s.Key.GoodClassName })
                 .ToListAsync();
 
             var getSubCodePro = await _context.CodePromotion
                 .Where(w => w.SubId == saleproGoodPattn.SubId)
-                .Select(s => new { s.SubCodePro })
+                .GroupBy(g => new { g.SubCodePro })
+                .Select(s => new { s.Key.SubCodePro })
                 .ToListAsync();
 
             saleproGoodPattn.GoodPattnName = getGoodPattn[0].GoodPattnName;

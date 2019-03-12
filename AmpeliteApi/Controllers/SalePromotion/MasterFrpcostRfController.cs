@@ -81,12 +81,14 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
             var getProduct = await _context.GetTransactionInv
                 .Where(w => w.ProductCode == saleproFrpcostRf.GoodCateCode)
-                .Select(s => new { s.Product })
+                .GroupBy(g => new { g.Product })
+                .Select(s => new { s.Key.Product })
                 .ToListAsync();
 
             var getSubCodePro = await _context.CodePromotion
                 .Where(w => w.SubId == saleproFrpcostRf.SubId)
-                .Select(s => new { s.SubCodePro })
+                .GroupBy(g => new { g.SubCodePro })
+                .Select(s => new { s.Key.SubCodePro })
                 .ToListAsync();
 
             saleproFrpcostRf.GoodCateName = getProduct[0].Product;
@@ -124,12 +126,14 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
             var getProduct = await _context.GetTransactionInv
                 .Where(w => w.ProductCode == saleproFrpcostRf.GoodCateCode)
-                .Select(s => new { s.Product })
+                .GroupBy(g => new { g.Product })
+                .Select(s => new { s.Key.Product })
                 .ToListAsync();
 
             var getSubCodePro = await _context.CodePromotion
                 .Where(w => w.SubId == saleproFrpcostRf.SubId)
-                .Select(s => new { s.SubCodePro })
+                .GroupBy(g => new { g.SubCodePro })
+                .Select(s => new { s.Key.SubCodePro })
                 .ToListAsync();
 
             saleproFrpcostRf.GoodCateName = getProduct[0].Product;
