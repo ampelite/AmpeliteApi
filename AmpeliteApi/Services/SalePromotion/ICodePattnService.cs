@@ -28,6 +28,7 @@ namespace AmpeliteApi.Services.SalePromotion
         public List<DropDowns> PattnDropDowns()
         {
             var list = PattnActive()
+                .Where(w => w.GoodPattnCode != null)
                 .GroupBy(x => new
                 {
                     x.GoodPattnCode,

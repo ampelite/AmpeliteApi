@@ -28,6 +28,7 @@ namespace AmpeliteApi.Services.SalePromotion
         public List<DropDowns> ClassDropDowns()
         {
             var list = ClassActive()
+                .Where(w => w.GoodClassCode != null)
                 .GroupBy(x => new
                 {
                     x.GoodClassCode,

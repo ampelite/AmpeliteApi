@@ -81,18 +81,16 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
             var getProduct = await _context.GetTransactionInv
                 .Where(w => w.ProductCode == saleproFrpcostRf.GoodCateCode)
-                .GroupBy(g => new { g.Product })
-                .Select(s => new { s.Key.Product })
-                .SingleOrDefaultAsync();
+                .Select(s => new { s.Product })
+                .ToListAsync();
 
             var getSubCodePro = await _context.CodePromotion
                 .Where(w => w.SubId == saleproFrpcostRf.SubId)
-                .GroupBy(g => new { g.SubCodePro })
-                .Select(s => new { s.Key.SubCodePro })
-                .SingleOrDefaultAsync();
+                .Select(s => new { s.SubCodePro })
+                .ToListAsync();
 
-            saleproFrpcostRf.GoodCateName = getProduct.Product;
-            saleproFrpcostRf.SubCodePro = getSubCodePro.SubCodePro;
+            saleproFrpcostRf.GoodCateName = getProduct[0].Product;
+            saleproFrpcostRf.SubCodePro = getSubCodePro[0].SubCodePro;
 
             _context.Entry(saleproFrpcostRf).State = EntityState.Modified;
 
@@ -126,24 +124,21 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
             var getProduct = await _context.GetTransactionInv
                 .Where(w => w.ProductCode == saleproFrpcostRf.GoodCateCode)
-                .GroupBy(g => new { g.Product })
-                .Select(s => new { s.Key.Product })
-                .SingleOrDefaultAsync();
+                .Select(s => new { s.Product })
+                .ToListAsync();
 
             var getSubCodePro = await _context.CodePromotion
                 .Where(w => w.SubId == saleproFrpcostRf.SubId)
-                .GroupBy(g => new { g.SubCodePro })
-                .Select(s => new { s.Key.SubCodePro })
-                .SingleOrDefaultAsync();
+                .Select(s => new { s.SubCodePro })
+                .ToListAsync();
 
-            saleproFrpcostRf.GoodCateName = getProduct.Product;
-            saleproFrpcostRf.SubCodePro = getSubCodePro.SubCodePro;
+            saleproFrpcostRf.GoodCateName = getProduct[0].Product;
+            saleproFrpcostRf.SubCodePro = getSubCodePro[0].SubCodePro;
 
             _context.SaleproFrpcostRf.Add(saleproFrpcostRf);
             await _context.SaveChangesAsync();
 
-            return Ok(saleproFrpcostRf);
-            //return CreatedAtAction("GetSaleproFrpcostRf", new { id = saleproFrpcostRf.Id }, saleproFrpcostRf);
+            return CreatedAtAction("GetSaleproFrpcostRf", new { id = saleproFrpcostRf.Id }, saleproFrpcostRf);
         }
 
         // DELETE: api/MasterFrpcostRf/5

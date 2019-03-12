@@ -51,7 +51,7 @@ namespace AmpeliteApi.Controllers.SalePromotion
                 var response = new SpecialResponse
                 {
                     SubPromotionDropDowns = iCodeProService.SubPromotionDropDowns(),
-                    GoodPattnDropDowns = iCodeProService.SubPromotionDropDowns(),
+                    GoodPattnDropDowns = iPattnService.PattnDropDowns(),
                     GoodClassDropDowns = iClassService.ClassDropDowns(),
                     promotionSpecial = saleproGoodPattn
                 };
@@ -85,6 +85,25 @@ namespace AmpeliteApi.Controllers.SalePromotion
                 return BadRequest();
             }
 
+            var getGoodPattn = await _context.GetTransactionInv
+                .Where(w => w.GoodPattnCode == saleproGoodPattn.GoodPattnCode)
+                .Select(s => new { s.GoodPattnName })
+                .ToListAsync();
+
+            var getGoodClass = await _context.GetTransactionInv
+                .Where(w => w.GoodClassCode == saleproGoodPattn.GoodClassCode)
+                .Select(s => new { s.GoodClassName })
+                .ToListAsync();
+
+            var getSubCodePro = await _context.CodePromotion
+                .Where(w => w.SubId == saleproGoodPattn.SubId)
+                .Select(s => new { s.SubCodePro })
+                .ToListAsync();
+
+            saleproGoodPattn.GoodPattnName = getGoodPattn[0].GoodPattnName;
+            saleproGoodPattn.GoodClassName = getGoodClass[0].GoodClassName;
+            saleproGoodPattn.SubCodePro = getSubCodePro[0].SubCodePro;
+
             _context.Entry(saleproGoodPattn).State = EntityState.Modified;
 
             try
@@ -114,6 +133,25 @@ namespace AmpeliteApi.Controllers.SalePromotion
             {
                 return BadRequest(ModelState);
             }
+
+            var getGoodPattn = await _context.GetTransactionInv
+                .Where(w => w.GoodPattnCode == saleproGoodPattn.GoodPattnCode)
+                .Select(s => new { s.GoodPattnName })
+                .ToListAsync();
+
+            var getGoodClass = await _context.GetTransactionInv
+                .Where(w => w.GoodClassCode == saleproGoodPattn.GoodClassCode)
+                .Select(s => new { s.GoodClassName })
+                .ToListAsync();
+
+            var getSubCodePro = await _context.CodePromotion
+                .Where(w => w.SubId == saleproGoodPattn.SubId)
+                .Select(s => new { s.SubCodePro })
+                .ToListAsync();
+
+            saleproGoodPattn.GoodPattnName = getGoodPattn[0].GoodPattnName;
+            saleproGoodPattn.GoodClassName = getGoodClass[0].GoodClassName;
+            saleproGoodPattn.SubCodePro = getSubCodePro[0].SubCodePro;
 
             _context.SaleproGoodPattn.Add(saleproGoodPattn);
             await _context.SaveChangesAsync();
