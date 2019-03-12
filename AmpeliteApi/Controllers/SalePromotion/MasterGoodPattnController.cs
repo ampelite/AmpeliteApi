@@ -7,18 +7,30 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmpeliteApi.Data;
 using AmpeliteApi.Models;
+using AmpeliteApi.Services.SalePromotion;
 
 namespace AmpeliteApi.Controllers.SalePromotion
 {
     [Produces("application/json")]
-    [Route("api/MasterGoodPattn")]
+    [Route("api/SalePromotion/[controller]")]
     public class MasterGoodPattnController : Controller
     {
         private readonly db_AmpeliteContext _context;
+        private ICodePromotionService iCodeProService;
+        private ICodePattnService iPattnService;
+        private ICodeClassService iClassService;
 
-        public MasterGoodPattnController(db_AmpeliteContext context)
+        public MasterGoodPattnController(
+            db_AmpeliteContext context,
+            ICodePromotionService iCodePromotionService,
+            ICodePattnService iCodePattnService,
+            ICodeClassService iCodeClassService
+        )
         {
             _context = context;
+            iCodeProService = iCodePromotionService;
+            iPattnService = iCodePattnService;
+            iClassService = iCodeClassService;
         }
 
         // GET: api/MasterGoodPattn
@@ -32,19 +44,31 @@ namespace AmpeliteApi.Controllers.SalePromotion
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSaleproGoodPattn([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                var saleproGoodPattn = await _context.SaleproGoodPattn.SingleOrDefaultAsync(m => m.Id == id);
+
+                var response = new SpecialResponse
+                {
+                    SubPromotionDropDowns = iCodeProService.SubPromotionDropDowns(),
+                    GoodPattnDropDowns = iCodeProService.SubPromotionDropDowns(),
+                    GoodClassDropDowns = iClassService.ClassDropDowns(),
+                    promotionSpecial = saleproGoodPattn
+                };
+                return Ok(response);
             }
-
-            var saleproGoodPattn = await _context.SaleproGoodPattn.SingleOrDefaultAsync(m => m.Id == id);
-
-            if (saleproGoodPattn == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return StatusCode(500, ex);
             }
+        }
 
-            return Ok(saleproGoodPattn);
+        public class SpecialResponse
+        {
+            public List<DropDowns> SubPromotionDropDowns { get; set; }
+            public List<DropDowns> GoodPattnDropDowns { get; set; }
+            public List<DropDowns> GoodClassDropDowns { get; set; }
+            public SaleproGoodPattn promotionSpecial { get; set; }
         }
 
         // PUT: api/MasterGoodPattn/5

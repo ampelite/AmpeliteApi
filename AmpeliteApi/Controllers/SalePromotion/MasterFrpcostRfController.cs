@@ -2,23 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmpeliteApi.Data;
 using AmpeliteApi.Models;
+using AmpeliteApi.Services.SalePromotion;
 
 namespace AmpeliteApi.Controllers.SalePromotion
 {
     [Produces("application/json")]
-    [Route("api/MasterFrpcostRf")]
+    [Route("api/SalePromotion/[controller]")]
     public class MasterFrpcostRfController : Controller
     {
-        private readonly db_AmpeliteContext _context;
+        private db_AmpeliteContext _context;
+        private ICodePromotionService iCodeProService;
+        private ICodeProductService iProductService;
 
-        public MasterFrpcostRfController(db_AmpeliteContext context)
+        public MasterFrpcostRfController(
+            db_AmpeliteContext context,
+            ICodePromotionService iCodePromotionService,
+            ICodeProductService iCodeProductService
+        )
         {
             _context = context;
+            iCodeProService = iCodePromotionService;
+            iProductService = iCodeProductService;
         }
 
         // GET: api/MasterFrpcostRf
@@ -30,21 +38,31 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
         // GET: api/MasterFrpcostRf/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSaleproFrpcostRf([FromRoute] int id)
+        public async Task<IActionResult> GetSaleproFrpcostRf(int id)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                var saleproFrpcostRf = await _context.SaleproFrpcostRf.SingleOrDefaultAsync(m => m.Id == id);
+
+                var response = new FrpcostRfResponse
+                {
+                    ProductDropDowns = iProductService.ProductnDropDowns(),
+                    SubPromotionDropDowns = iCodeProService.SubPromotionDropDowns(),
+                    promotionCostRF = saleproFrpcostRf
+                };
+                return Ok(response);
             }
-
-            var saleproFrpcostRf = await _context.SaleproFrpcostRf.SingleOrDefaultAsync(m => m.Id == id);
-
-            if (saleproFrpcostRf == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return StatusCode(500, ex);
             }
+        }
 
-            return Ok(saleproFrpcostRf);
+        public class FrpcostRfResponse
+        {
+            public List<DropDowns> ProductDropDowns { get; set; }
+            public List<DropDowns> SubPromotionDropDowns { get; set; }
+            public SaleproFrpcostRf promotionCostRF { get; set; }
         }
 
         // PUT: api/MasterFrpcostRf/5
@@ -60,6 +78,21 @@ namespace AmpeliteApi.Controllers.SalePromotion
             {
                 return BadRequest();
             }
+
+            var getProduct = await _context.GetTransactionInv
+                .Where(w => w.ProductCode == saleproFrpcostRf.GoodCateCode)
+                .GroupBy(g => new { g.Product })
+                .Select(s => new { s.Key.Product })
+                .SingleOrDefaultAsync();
+
+            var getSubCodePro = await _context.CodePromotion
+                .Where(w => w.SubId == saleproFrpcostRf.SubId)
+                .GroupBy(g => new { g.SubCodePro })
+                .Select(s => new { s.Key.SubCodePro })
+                .SingleOrDefaultAsync();
+
+            saleproFrpcostRf.GoodCateName = getProduct.Product;
+            saleproFrpcostRf.SubCodePro = getSubCodePro.SubCodePro;
 
             _context.Entry(saleproFrpcostRf).State = EntityState.Modified;
 
@@ -91,10 +124,26 @@ namespace AmpeliteApi.Controllers.SalePromotion
                 return BadRequest(ModelState);
             }
 
+            var getProduct = await _context.GetTransactionInv
+                .Where(w => w.ProductCode == saleproFrpcostRf.GoodCateCode)
+                .GroupBy(g => new { g.Product })
+                .Select(s => new { s.Key.Product })
+                .SingleOrDefaultAsync();
+
+            var getSubCodePro = await _context.CodePromotion
+                .Where(w => w.SubId == saleproFrpcostRf.SubId)
+                .GroupBy(g => new { g.SubCodePro })
+                .Select(s => new { s.Key.SubCodePro })
+                .SingleOrDefaultAsync();
+
+            saleproFrpcostRf.GoodCateName = getProduct.Product;
+            saleproFrpcostRf.SubCodePro = getSubCodePro.SubCodePro;
+
             _context.SaleproFrpcostRf.Add(saleproFrpcostRf);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSaleproFrpcostRf", new { id = saleproFrpcostRf.Id }, saleproFrpcostRf);
+            return Ok(saleproFrpcostRf);
+            //return CreatedAtAction("GetSaleproFrpcostRf", new { id = saleproFrpcostRf.Id }, saleproFrpcostRf);
         }
 
         // DELETE: api/MasterFrpcostRf/5

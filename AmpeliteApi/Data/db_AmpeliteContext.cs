@@ -993,6 +993,8 @@ namespace AmpeliteApi.Data
             {
                 entity.ToTable("SALEPRO_FRPCostRF");
 
+                entity.HasKey(e => e.Id);
+
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.GoodCateCode)

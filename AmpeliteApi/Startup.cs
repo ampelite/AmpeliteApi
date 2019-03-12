@@ -37,6 +37,9 @@ namespace AmpeliteApi
 
             services.AddTransient<ICodePromotionService, CodePromotionService>();
             services.AddTransient<IPromotionTargetService, PromotionTargetService>();
+            services.AddTransient<ICodeProductService, CodeProductService>();
+            services.AddTransient<ICodePattnService, CodePattnService>();
+            services.AddTransient<ICodeClassService, CodeClassService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
