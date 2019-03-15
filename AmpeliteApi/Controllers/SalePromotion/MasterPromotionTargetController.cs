@@ -68,11 +68,16 @@ namespace AmpeliteApi.Controllers.SalePromotion
                 var proTarget = ctx.SaleProPromotionTargets
                     .FirstOrDefault(x => x.TargetID == targetId);
 
+                var disabledEdit = ctx.SaleProBalanceDTs
+                    .Where(x => x.TargetID == targetId)
+                    .Any();
+
                 var response = new PromotionTargetResponse
                 {
                     SubPromotionDropDowns = subPromotionDropDowns,
                     UnitDropDowns = unitDropDowns,
-                    PromotionTarget = proTarget
+                    PromotionTarget = proTarget,
+                    DisabledEdit = disabledEdit
                 };
                 return Ok(response);
             }
@@ -137,6 +142,7 @@ namespace AmpeliteApi.Controllers.SalePromotion
             public List<DropDowns> SubPromotionDropDowns { get; set; }
             public List<DropDowns> UnitDropDowns { get; set; }
             public SaleProPromotionTarget PromotionTarget { get; set; }
+            public bool DisabledEdit { get; set; }
         }
 
         public class ListPromotionTarget

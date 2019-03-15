@@ -133,7 +133,8 @@ namespace AmpeliteApi.Controllers.SalePromotion
                 });
 
 
-                var responst = new FrpLoyaltyResponse{
+                var responst = new FrpLoyaltyResponse
+                {
                     SaleProBalanceHDs = frpLoyalty,
                     SaleProPromotionTargets = GetPromotionTargets(month, year).ToList()
                 };
