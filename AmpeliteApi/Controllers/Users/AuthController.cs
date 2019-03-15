@@ -12,6 +12,9 @@ using AmpeliteApi.Data;
 using AmpeliteApi.Models;
 
 using AmpeliteApi.Controllers.Users;
+using System.IdentityModel.Tokens.Jwt;
+using JWT;
+using JWT.Serializers;
 
 namespace AmpeliteApi.Controllers.Users
 {
@@ -20,13 +23,64 @@ namespace AmpeliteApi.Controllers.Users
     public class AuthController : Controller
     {
         private readonly db_AmpeliteContext _context;
-
+        const string secret = "AmpelitE88";
 
         public AuthController(db_AmpeliteContext context)
         {
             _context = context;
         }
-        
+
+        [HttpPost("SelectProfile")]
+        public async Task<IActionResult> selectProfile([FromBody] checkToken token)
+        {
+            var getId = Auth.CheckTokenGetId(token.access_token);
+            var id = int.Parse(getId.ToString());
+
+            var Employee = await _context.HrEmployee.SingleOrDefaultAsync(m => m.SEmpId == id);
+
+            if (Employee == null)
+            {
+                return NotFound();
+            }
+            return Ok(Employee);
+
+
+        }
+
+        [HttpPost("UpdateProfile")]
+        public async Task<IActionResult> updateProfile([FromBody] HrEmployee hrEmployee)
+        {
+            _context.Update(hrEmployee);
+            await _context.SaveChangesAsync();
+
+            return Ok(hrEmployee);
+        }
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> RegisterUser([FromBody] HrEmployee hrEmployee)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                MD5 md5Hash = MD5.Create();
+                hrEmployee.SEmpPassword = Auth.GetMd5Hash(md5Hash, hrEmployee.SEmpPassword);
+                hrEmployee.UpdateAt = DateTime.Today;
+                _context.HrEmployee.Add(hrEmployee);
+                await _context.SaveChangesAsync();
+
+                return Ok(hrEmployee);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex);
+            }
+
+        }
+
         [HttpPost("SignIn")]
         public async Task<IActionResult> Authtication([FromBody] SignIn signin)
         {
@@ -86,6 +140,7 @@ namespace AmpeliteApi.Controllers.Users
         public string Password { get; set; }
     }
 
+
     public partial class CustomerInfo
     {
         public int UserId { get; set; }
@@ -93,6 +148,11 @@ namespace AmpeliteApi.Controllers.Users
         public string Email { get; set; }
         public string Password { get; set; }
         //public string MacAddress { get; set; }
+    }
+
+    public partial class checkToken
+    {
+        public String access_token { get; set; }
     }
 
 
