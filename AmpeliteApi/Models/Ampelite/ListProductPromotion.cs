@@ -5,6 +5,7 @@ namespace AmpeliteApi.Models
 {
     public partial class ListProductPromotion
     {
+        public int Id { get; set; }
         public string GoodId { get; set; }
         public string GoodCode { get; set; }
         public string SubId { get; set; }

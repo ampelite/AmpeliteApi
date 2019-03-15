@@ -15,22 +15,19 @@ namespace AmpeliteApi.Controllers.SalePromotion
     [Route("api/SalePromotion/[controller]")]
     public class MasterGoodPattnController : Controller
     {
-        private readonly db_AmpeliteContext _context;
+        private db_AmpeliteContext _context;
         private ICodePromotionService iCodeProService;
-        private ICodePattnService iPattnService;
-        private ICodeClassService iClassService;
+        private IGetTransactionInvService iGetTranInvService;
 
         public MasterGoodPattnController(
             db_AmpeliteContext context,
             ICodePromotionService iCodePromotionService,
-            ICodePattnService iCodePattnService,
-            ICodeClassService iCodeClassService
+            IGetTransactionInvService iGetTransactionInvService
         )
         {
             _context = context;
             iCodeProService = iCodePromotionService;
-            iPattnService = iCodePattnService;
-            iClassService = iCodeClassService;
+            iGetTranInvService = iGetTransactionInvService;
         }
 
         // GET: api/MasterGoodPattn
@@ -51,8 +48,8 @@ namespace AmpeliteApi.Controllers.SalePromotion
                 var response = new SpecialResponse
                 {
                     SubPromotionDropDowns = iCodeProService.SubPromotionDropDowns(),
-                    GoodPattnDropDowns = iPattnService.PattnDropDowns(),
-                    GoodClassDropDowns = iClassService.ClassDropDowns(),
+                    GoodPattnDropDowns = iGetTranInvService.PattnDropDowns(),
+                    GoodClassDropDowns = iGetTranInvService.ClassDropDowns(),
                     promotionSpecial = saleproGoodPattn
                 };
                 return Ok(response);

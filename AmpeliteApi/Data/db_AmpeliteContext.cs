@@ -662,7 +662,7 @@ namespace AmpeliteApi.Data
 
             modelBuilder.Entity<GoodBrandCode>(entity =>
             {
-                entity.HasKey(e => e.GoodBrandcode);
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.GoodBrandcode)
                     .HasMaxLength(50)
@@ -924,7 +924,7 @@ namespace AmpeliteApi.Data
 
             modelBuilder.Entity<ListProductPromotion>(entity =>
             {
-                entity.HasKey(e => e.GoodId);
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.ToTable("List_ProductPromotion");
 
@@ -932,6 +932,10 @@ namespace AmpeliteApi.Data
                     .HasColumnName("GoodID")
                     .HasMaxLength(50)
                     .ValueGeneratedNever();
+
+                entity.Property(e => e.GoodCode)
+                    .HasColumnName("GoodCode")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.SubCodePro)
                     .HasColumnName("SUB_CodePro")

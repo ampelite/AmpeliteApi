@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmpeliteApi.Data;
@@ -12,13 +13,13 @@ namespace AmpeliteApi.Controllers.SalePromotion
 {
     [Produces("application/json")]
     [Route("api/SalePromotion/[controller]")]
-    public class MasterFrpcostRfController : Controller
+    public class GoodCateCodesController : Controller
     {
         private db_AmpeliteContext _context;
         private ICodePromotionService iCodeProService;
         private IGetTransactionInvService iGetTranInvService;
 
-        public MasterFrpcostRfController(
+        public GoodCateCodesController(
             db_AmpeliteContext context,
             ICodePromotionService iCodePromotionService,
             IGetTransactionInvService iGetTransactionInvService
@@ -29,26 +30,26 @@ namespace AmpeliteApi.Controllers.SalePromotion
             iGetTranInvService = iGetTransactionInvService;
         }
 
-        // GET: api/MasterFrpcostRf
+        // GET: api/GoodCateCode
         [HttpGet]
-        public IEnumerable<SaleproFrpcostRf> GetSaleproFrpcostRf()
+        public IEnumerable<GoodCateCode> GetGoodCateCode()
         {
-            return _context.SaleproFrpcostRf;
+            return _context.GoodCateCode;
         }
 
-        // GET: api/MasterFrpcostRf/5
+        // GET: api/GoodCateCode/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSaleproFrpcostRf(int id)
+        public async Task<IActionResult> GetGoodCateCode([FromRoute] int id)
         {
             try
             {
-                var saleproFrpcostRf = await _context.SaleproFrpcostRf.SingleOrDefaultAsync(m => m.Id == id);
+                var goodCateCode = await _context.GoodCateCode.SingleOrDefaultAsync(m => m.Id == id);
 
-                var response = new FrpcostRfResponse
+                var response = new GoodCateResponse
                 {
-                    ProductDropDowns = iGetTranInvService.ProductDropDowns(),
                     SubPromotionDropDowns = iCodeProService.SubPromotionDropDowns(),
-                    promotionCostRF = saleproFrpcostRf
+                    GoodCateCodeDropDowns = iGetTranInvService.ProductDropDowns(),
+                    goodCate = goodCateCode
                 };
                 return Ok(response);
             }
@@ -58,43 +59,43 @@ namespace AmpeliteApi.Controllers.SalePromotion
             }
         }
 
-        public class FrpcostRfResponse
+        public class GoodCateResponse
         {
-            public List<DropDowns> ProductDropDowns { get; set; }
             public List<DropDowns> SubPromotionDropDowns { get; set; }
-            public SaleproFrpcostRf promotionCostRF { get; set; }
+            public List<DropDowns> GoodCateCodeDropDowns { get; set; }
+            public GoodCateCode goodCate { get; set; }
         }
 
-        // PUT: api/MasterFrpcostRf/5
+        // PUT: api/GoodCateCode/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSaleproFrpcostRf([FromRoute] int id, [FromBody] SaleproFrpcostRf saleproFrpcostRf)
+        public async Task<IActionResult> PutGoodCateCode([FromRoute] int id, [FromBody] GoodCateCode goodCateCode)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != saleproFrpcostRf.Id)
+            if (id != goodCateCode.Id)
             {
                 return BadRequest();
             }
 
             var getProduct = await _context.GetTransactionInv
-                .Where(w => w.ProductCode == saleproFrpcostRf.GoodCateCode)
+                .Where(w => w.ProductCode == goodCateCode.GoodCatecode)
                 .GroupBy(g => new { g.Product })
                 .Select(s => new { s.Key.Product })
                 .ToListAsync();
 
             var getSubCodePro = await _context.CodePromotion
-                .Where(w => w.SubId == saleproFrpcostRf.SubId)
+                .Where(w => w.SubId == goodCateCode.SubId)
                 .GroupBy(g => new { g.SubCodePro })
                 .Select(s => new { s.Key.SubCodePro })
                 .ToListAsync();
 
-            saleproFrpcostRf.GoodCateName = getProduct[0].Product;
-            saleproFrpcostRf.SubCodePro = getSubCodePro[0].SubCodePro;
+            goodCateCode.GoodCateName = getProduct[0].Product;
+            goodCateCode.SubCodePro = getSubCodePro[0].SubCodePro;
 
-            _context.Entry(saleproFrpcostRf).State = EntityState.Modified;
+            _context.Entry(goodCateCode).State = EntityState.Modified;
 
             try
             {
@@ -102,7 +103,7 @@ namespace AmpeliteApi.Controllers.SalePromotion
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SaleproFrpcostRfExists(id))
+                if (!GoodCateCodeExists(id))
                 {
                     return NotFound();
                 }
@@ -115,60 +116,60 @@ namespace AmpeliteApi.Controllers.SalePromotion
             return NoContent();
         }
 
-        // POST: api/MasterFrpcostRf
+        // POST: api/GoodCateCode
         [HttpPost]
-        public async Task<IActionResult> PostSaleproFrpcostRf([FromBody] SaleproFrpcostRf saleproFrpcostRf)
+        public async Task<IActionResult> PostGoodCateCode([FromBody] GoodCateCode goodCateCode)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var getProduct = await _context.GetTransactionInv
-                .Where(w => w.ProductCode == saleproFrpcostRf.GoodCateCode)
+            var getCate = await _context.GetTransactionInv
+                .Where(w => w.ProductCode == goodCateCode.GoodCatecode)
                 .GroupBy(g => new { g.Product })
                 .Select(s => new { s.Key.Product })
                 .ToListAsync();
 
             var getSubCodePro = await _context.CodePromotion
-                .Where(w => w.SubId == saleproFrpcostRf.SubId)
+                .Where(w => w.SubId == goodCateCode.SubId)
                 .GroupBy(g => new { g.SubCodePro })
                 .Select(s => new { s.Key.SubCodePro })
                 .ToListAsync();
 
-            saleproFrpcostRf.GoodCateName = getProduct[0].Product;
-            saleproFrpcostRf.SubCodePro = getSubCodePro[0].SubCodePro;
+            goodCateCode.GoodCateName = getCate[0].Product;
+            goodCateCode.SubCodePro = getSubCodePro[0].SubCodePro;
 
-            _context.SaleproFrpcostRf.Add(saleproFrpcostRf);
+            _context.GoodCateCode.Add(goodCateCode);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSaleproFrpcostRf", new { id = saleproFrpcostRf.Id }, saleproFrpcostRf);
+            return CreatedAtAction("GetGoodCateCode", new { id = goodCateCode.Id }, goodCateCode);
         }
 
-        // DELETE: api/MasterFrpcostRf/5
+        // DELETE: api/GoodCateCode/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSaleproFrpcostRf([FromRoute] int id)
+        public async Task<IActionResult> DeleteGoodCateCode([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var saleproFrpcostRf = await _context.SaleproFrpcostRf.SingleOrDefaultAsync(m => m.Id == id);
-            if (saleproFrpcostRf == null)
+            var goodCateCode = await _context.GoodCateCode.SingleOrDefaultAsync(m => m.Id == id);
+            if (goodCateCode == null)
             {
                 return NotFound();
             }
 
-            _context.SaleproFrpcostRf.Remove(saleproFrpcostRf);
+            _context.GoodCateCode.Remove(goodCateCode);
             await _context.SaveChangesAsync();
 
-            return Ok(saleproFrpcostRf);
+            return Ok(goodCateCode);
         }
 
-        private bool SaleproFrpcostRfExists(int id)
+        private bool GoodCateCodeExists(int id)
         {
-            return _context.SaleproFrpcostRf.Any(e => e.Id == id);
+            return _context.GoodCateCode.Any(e => e.Id == id);
         }
     }
 }
