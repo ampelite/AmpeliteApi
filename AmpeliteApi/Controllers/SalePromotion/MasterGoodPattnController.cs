@@ -32,9 +32,24 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
         // GET: api/MasterGoodPattn
         [HttpGet]
-        public IEnumerable<SaleproGoodPattn> GetSaleproGoodPattn()
+        public async Task<IActionResult> GetSaleproGoodPattn()
         {
-            return _context.SaleproGoodPattn;
+            var query = await (from goodpattn in _context.SaleproGoodPattn
+                               join promotion in _context.CodePromotion
+                               on goodpattn.SubId equals promotion.SubId
+                               select new
+                               { goodpattn.Id
+                                ,goodpattn.GoodPattnCode
+                                ,goodpattn.GoodPattnName
+                                ,goodpattn.GoodClassCode
+                                ,goodpattn.GoodClassName
+                                ,goodpattn.FactorCp
+                                ,goodpattn.SubId
+                                ,goodpattn.SubCodePro
+                                ,goodpattn.Status
+                                ,promotion.SubPromotion
+                               }).ToListAsync();
+            return Ok(query);
         }
 
         // GET: api/MasterGoodPattn/5

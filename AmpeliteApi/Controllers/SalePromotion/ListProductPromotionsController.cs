@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmpeliteApi.Data;
 using AmpeliteApi.Models;
+using AmpeliteApi.Services.SalePromotion;
 
 namespace AmpeliteApi.Controllers.SalePromotion
 {
@@ -15,51 +16,96 @@ namespace AmpeliteApi.Controllers.SalePromotion
     public class ListProductPromotionsController : Controller
     {
         private readonly db_AmpeliteContext _context;
+        private ICodePromotionService iCodeProService;
+        private IGetTransactionInvService iGetTranInvService;
 
-        public ListProductPromotionsController(db_AmpeliteContext context)
+        public ListProductPromotionsController(
+            db_AmpeliteContext context,
+            ICodePromotionService iCodePromotionService,
+            IGetTransactionInvService iGetTransactionInvService
+        )
         {
             _context = context;
+            iCodeProService = iCodePromotionService;
+            iGetTranInvService = iGetTransactionInvService;
         }
 
         // GET: api/ListProductPromotions
         [HttpGet]
-        public IEnumerable<ListProductPromotion> GetListProductPromotion()
+        public async Task<IActionResult> GetListProductPromotion()
         {
-            return _context.ListProductPromotion;
+            var query = await (from product in _context.ListProductPromotion
+                               join promotion in _context.CodePromotion
+                               on product.SubId equals promotion.SubId
+
+                               select new
+                               { product.Id
+                                ,product.GoodId
+                                ,product.GoodCode
+                                ,product.SubId
+                                ,product.SubCodePro
+                                ,promotion.SubPromotion
+                               }).ToListAsync();
+            return Ok(query);
         }
 
         // GET: api/ListProductPromotions/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetListProductPromotion([FromRoute] string id)
+        public async Task<IActionResult> GetListProductPromotion([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                var listProductPromotion = await _context.ListProductPromotion.SingleOrDefaultAsync(m => m.Id == id);
+
+                var response = new ListProductResponse
+                {
+                    SubPromotionDropDowns = iCodeProService.SubPromotionDropDowns(),
+                    GoodCodeDropDowns = iGetTranInvService.GoodCodeDropDowns(),
+                    GoodCode = listProductPromotion
+                };
+                return Ok(response);
             }
-
-            var listProductPromotion = await _context.ListProductPromotion.SingleOrDefaultAsync(m => m.GoodId == id);
-
-            if (listProductPromotion == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return StatusCode(500, ex);
             }
+        }
 
-            return Ok(listProductPromotion);
+        public class ListProductResponse
+        {
+            public List<DropDowns> SubPromotionDropDowns { get; set; }
+            public List<DropDowns> GoodCodeDropDowns { get; set; }
+            public ListProductPromotion GoodCode { get; set; }
         }
 
         // PUT: api/ListProductPromotions/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutListProductPromotion([FromRoute] string id, [FromBody] ListProductPromotion listProductPromotion)
+        public async Task<IActionResult> PutListProductPromotion([FromRoute] int id, [FromBody] ListProductPromotion listProductPromotion)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != listProductPromotion.GoodId)
+            if (id != listProductPromotion.Id)
             {
                 return BadRequest();
             }
+
+            var getCode = await _context.GetTransactionInv
+                .Where(w => w.GoodId == listProductPromotion.GoodId)
+                .GroupBy(g => new { g.GoodCode })
+                .Select(s => new { s.Key.GoodCode })
+                .ToListAsync();
+
+            var getSubCodePro = await _context.CodePromotion
+                .Where(w => w.SubId == listProductPromotion.SubId)
+                .GroupBy(g => new { g.SubCodePro })
+                .Select(s => new { s.Key.SubCodePro })
+                .ToListAsync();
+
+            listProductPromotion.GoodCode = getCode[0].GoodCode;
+            listProductPromotion.SubCodePro = getSubCodePro[0].SubCodePro;
 
             _context.Entry(listProductPromotion).State = EntityState.Modified;
 
@@ -69,7 +115,7 @@ namespace AmpeliteApi.Controllers.SalePromotion
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ListProductPromotionExists(id))
+                if (!ListProductPromotionExists(id.ToString()))
                 {
                     return NotFound();
                 }
@@ -90,6 +136,21 @@ namespace AmpeliteApi.Controllers.SalePromotion
             {
                 return BadRequest(ModelState);
             }
+
+            var getCode = await _context.GetTransactionInv
+                .Where(w => w.GoodId == listProductPromotion.GoodId)
+                .GroupBy(g => new { g.GoodCode })
+                .Select(s => new { s.Key.GoodCode })
+                .ToListAsync();
+
+            var getSubCodePro = await _context.CodePromotion
+                .Where(w => w.SubId == listProductPromotion.SubId)
+                .GroupBy(g => new { g.SubCodePro })
+                .Select(s => new { s.Key.SubCodePro })
+                .ToListAsync();
+
+            listProductPromotion.GoodCode = getCode[0].GoodCode;
+            listProductPromotion.SubCodePro = getSubCodePro[0].SubCodePro;
 
             _context.ListProductPromotion.Add(listProductPromotion);
             try

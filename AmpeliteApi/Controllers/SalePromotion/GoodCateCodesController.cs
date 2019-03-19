@@ -30,14 +30,27 @@ namespace AmpeliteApi.Controllers.SalePromotion
             iGetTranInvService = iGetTransactionInvService;
         }
 
-        // GET: api/GoodCateCode
+        // GET: api/GoodCateCodes
         [HttpGet]
-        public IEnumerable<GoodCateCode> GetGoodCateCode()
+        public async Task<IActionResult> GetGoodCateCode()
         {
-            return _context.GoodCateCode;
+            var query = await (from cate in _context.GoodCateCode
+                               join promotion in _context.CodePromotion
+                               on cate.SubId equals promotion.SubId
+                               select new
+                               { cate.Id
+                                ,cate.GoodCatecode
+                                ,cate.GoodCateName
+                                ,cate.SubId
+                                ,cate.SubCodePro
+                                ,cate.Status
+                                ,promotion.SubPromotion
+                               }).ToListAsync();
+            return Ok(query);
+            
         }
 
-        // GET: api/GoodCateCode/5
+        // GET: api/GoodCateCodes/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetGoodCateCode([FromRoute] int id)
         {
@@ -66,7 +79,7 @@ namespace AmpeliteApi.Controllers.SalePromotion
             public GoodCateCode goodCate { get; set; }
         }
 
-        // PUT: api/GoodCateCode/5
+        // PUT: api/GoodCateCodes/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGoodCateCode([FromRoute] int id, [FromBody] GoodCateCode goodCateCode)
         {
@@ -116,7 +129,7 @@ namespace AmpeliteApi.Controllers.SalePromotion
             return NoContent();
         }
 
-        // POST: api/GoodCateCode
+        // POST: api/GoodCateCodes
         [HttpPost]
         public async Task<IActionResult> PostGoodCateCode([FromBody] GoodCateCode goodCateCode)
         {
@@ -146,7 +159,7 @@ namespace AmpeliteApi.Controllers.SalePromotion
             return CreatedAtAction("GetGoodCateCode", new { id = goodCateCode.Id }, goodCateCode);
         }
 
-        // DELETE: api/GoodCateCode/5
+        // DELETE: api/GoodCateCodes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGoodCateCode([FromRoute] int id)
         {

@@ -15,7 +15,7 @@ namespace AmpeliteApi.Controllers.SalePromotion
     [Route("api/SalePromotion/[controller]")]
     public class GoodBrandCodesController : Controller
     {
-        private readonly db_AmpeliteContext _context;
+        private db_AmpeliteContext _context;
         private ICodePromotionService iCodeProService;
         private IGetTransactionInvService iGetTranInvService;
 
@@ -32,9 +32,21 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
         // GET: api/GoodBrandCodes
         [HttpGet]
-        public IEnumerable<GoodBrandCode> GetGoodBrandCode()
+        public async Task<IActionResult> GetGoodBrandCode()
         {
-            return _context.GoodBrandCode;
+            var query = await (from brand in _context.GoodBrandCode
+                               join promotion in _context.CodePromotion
+                               on brand.SubId equals promotion.SubId
+
+                               select new
+                               { brand.Id
+                                ,brand.GoodBrandcode
+                                ,brand.GoodBrandName
+                                ,brand.SubId
+                                ,brand.SubCodePro
+                                ,promotion.SubPromotion
+                               }).ToListAsync();
+            return Ok(query);
         }
 
         // GET: api/GoodBrandCodes/5
@@ -162,14 +174,14 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
         // DELETE: api/GoodBrandCodes/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGoodBrandCode([FromRoute] string id)
+        public async Task<IActionResult> DeleteGoodBrandCode([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var goodBrandCode = await _context.GoodBrandCode.SingleOrDefaultAsync(m => m.GoodBrandcode == id);
+            var goodBrandCode = await _context.GoodBrandCode.SingleOrDefaultAsync(m => m.Id == id);
             if (goodBrandCode == null)
             {
                 return NotFound();

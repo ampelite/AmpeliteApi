@@ -31,9 +31,25 @@ namespace AmpeliteApi.Controllers.SalePromotion
 
         // GET: api/MasterFrpcostRf
         [HttpGet]
-        public IEnumerable<SaleproFrpcostRf> GetSaleproFrpcostRf()
+        public async Task<IActionResult> GetSaleproFrpcostRf()
         {
-            return _context.SaleproFrpcostRf;
+            var query = await (from costRf in _context.SaleproFrpcostRf
+                               join promotion in _context.CodePromotion
+                               on costRf.SubId equals promotion.SubId
+                               select new
+                               { costRf.Id
+                                ,costRf.GoodCateCode
+                                ,costRf.GoodCateName
+                                ,costRf.Amount
+                                ,costRf.Rf
+                                ,costRf.TrsP
+                                ,costRf.SubId
+                                ,costRf.SubCodePro
+                                ,costRf.MaxLength
+                                ,costRf.Status
+                                ,promotion.SubPromotion
+                               }).ToListAsync();
+            return Ok(query);
         }
 
         // GET: api/MasterFrpcostRf/5
